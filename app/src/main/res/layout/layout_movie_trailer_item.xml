@@ -13,7 +13,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.ngohoang.along.appcore.common.DynamicHeightImageView
+        <com.vnwarriors.advancedui.appcore.common.DynamicHeightImageView
             android:id="@+id/ivBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

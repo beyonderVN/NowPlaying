@@ -1,6 +1,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.fernandocejas.frodo'
+
+frodo {
+    enabled = true
+}
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -34,6 +38,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+
+//    https://github.com/android10/frodo
+
+        defaultPublishConfig "debug"
+    frodo {
+        enabled = true
+    }
+
 }
 
 dependencies {

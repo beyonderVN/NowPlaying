@@ -36,7 +36,7 @@ import static ngohoanglong.com.nowplaying.display.MainViewModel.Mapper.tranToMov
 public class MainViewModel extends PostViewModel {
     private static final String TAG = "MainViewModel";
     MovieBoxServiceApi service;
-    int page = 0;
+    int page = 1;
 
 
 
@@ -70,6 +70,7 @@ public class MainViewModel extends PostViewModel {
                             Type listType = new TypeToken<ArrayList<Movie>>() {
                             }.getType();
                             List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"), listType);
+                            Log.d(TAG, "call: movies.size"+movies.size());
                             return movies;
                         }
                     })
@@ -90,8 +91,8 @@ public class MainViewModel extends PostViewModel {
                     .subscribe(new Action1<List<BaseHM>>() {
                         @Override
                         public void call(List<BaseHM> baseHMs) {
-                            if (posts.size() > 0) {
-                                updatePosts(posts);
+                            if (baseHMs.size() > 0) {
+                                updatePosts(baseHMs);
                             } else {
                                 Log.d(TAG, "loadFirst: return zero");
                             }
