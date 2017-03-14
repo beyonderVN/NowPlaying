@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="tv_padding_medium">12dp</dimen>
+    <dimen name="tv_textsize_large">20sp</dimen>
+    <dimen name="cv_corner_radius_medium">10dp</dimen>
+</resources>

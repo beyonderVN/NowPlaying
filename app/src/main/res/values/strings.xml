@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">NowPlaying</string>
+
+    <string name="detail_image">itemView</string>
+</resources>
