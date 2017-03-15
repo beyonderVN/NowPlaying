@@ -16,24 +16,24 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Provide "make" methods to create instances of {@link MovieBoxServiceApi}
+ * Provide "make" methods to create instances of {@link MovieBoxApi}
  * and its related dependencies, such as OkHttpClient, Gson, etc.
  */
 public class MovieBoxServiceFactory {
 
-    public static MovieBoxServiceApi makeService() {
+    public static MovieBoxApi makeService() {
         OkHttpClient okHttpClient = makeOkHttpClient(makeLoggingInterceptor());
         return makeService(okHttpClient);
     }
 
-    public static MovieBoxServiceApi makeService(OkHttpClient okHttpClient) {
+    public static MovieBoxApi makeService(OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BuildConfig.MOVIE_API_URL)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .build();
-        return retrofit.create(MovieBoxServiceApi.class);
+        return retrofit.create(MovieBoxApi.class);
     }
 
     public static OkHttpClient makeOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor) {

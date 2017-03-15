@@ -9,7 +9,8 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxServiceApi;
+import ngohoanglong.com.nowplaying.data.remote.MovieBoxApi;
+import ngohoanglong.com.nowplaying.data.remote.MovieBoxService;
 import ngohoanglong.com.nowplaying.data.remote.MovieBoxServiceFactory;
 import ngohoanglong.com.nowplaying.manager.AuthManager;
 import ngohoanglong.com.nowplaying.manager.NetworkingManager;
@@ -70,7 +71,14 @@ public class AppModule {
 
     @Provides
     @Singleton
-    MovieBoxServiceApi provideMovieBoxServiceApi() {
+    MovieBoxApi provideMovieBoxServiceApi() {
         return MovieBoxServiceFactory.makeService();
     }
+
+    @Provides
+    @Singleton
+    MovieBoxService provideMovieBoxService(MovieBoxApi movieBoxApi) {
+        return new MovieBoxService(movieBoxApi);
+    }
+
 }

@@ -3,6 +3,7 @@ package ngohoanglong.com.nowplaying.dependencyinjection.component;
 import dagger.Subcomponent;
 import ngohoanglong.com.nowplaying.dependencyinjection.ActivityScope;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
+import ngohoanglong.com.nowplaying.display.DragPanelMovieDetailDelegate;
 
 
 /**
@@ -11,5 +12,5 @@ import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
 @ActivityScope
 @Subcomponent(modules = {MovieModule.class})
 public interface MovieComponent {
-
+    void inject(DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate);
 }
