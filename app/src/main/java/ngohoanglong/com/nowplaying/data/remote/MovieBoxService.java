@@ -23,8 +23,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 
-import static android.R.attr.id;
-
 
 @Singleton
 public class MovieBoxService {
@@ -73,7 +71,7 @@ public class MovieBoxService {
             public void call(Subscriber<? super String> subscriber) {
                 String result="";
                 try {
-                    JsonObject jsonObject =  movieBoxApi.getTrailer(id).execute().body();
+                    JsonObject jsonObject =  movieBoxApi.getTrailer(page).execute().body();
 
                     JsonArray json = jsonObject.getAsJsonArray("youtube");
 
@@ -84,6 +82,7 @@ public class MovieBoxService {
 
                 } catch (IOException e) {
                     e.printStackTrace();
+                    subscriber.onError(e);
                 }
                 subscriber.onNext(result);
                 subscriber.onCompleted();

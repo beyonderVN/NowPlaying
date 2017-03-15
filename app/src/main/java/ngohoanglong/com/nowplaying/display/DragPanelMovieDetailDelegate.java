@@ -2,6 +2,7 @@ package ngohoanglong.com.nowplaying.display;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.github.pedrovgs.DraggableListener;
@@ -158,25 +159,24 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
         if(draggablePanel.getVisibility()== View.GONE)draggablePanel.setVisibility(View.VISIBLE);
 
         Movie movie = ((MovieHM) baseHM).getMovie();
-
+        Log.d("onItemClick", "onItemClick: "+movie.toString());
         movieDetailViewModel.getYouTubeUrl(movie.getId())
         .takeUntil(rxDelegate.stopEvent())
         .subscribe(new Subscriber<String>() {
             @Override
             public void onCompleted() {
-
+                draggablePanel.maximize();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                draggablePanel.maximize();
             }
 
             @Override
             public void onNext(String s) {
                 youtubePlayer.loadVideo(s);
                 youtubePlayer.setShowFullscreenButton(true);
-                draggablePanel.maximize();
             }
         })
 
