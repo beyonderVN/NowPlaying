@@ -1,8 +1,8 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.holdermodel;
+package ngohoanglong.com.nowplaying.display.recyclerview.holdermodel;
 
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
-import ngohoanglong.com.nowplaying.util.recyclerview.holderfactory.ViewTypeFactory;
+import ngohoanglong.com.nowplaying.display.recyclerview.holderfactory.ViewTypeFactory;
 
 /**
  * Created by Long on 10/5/2016.

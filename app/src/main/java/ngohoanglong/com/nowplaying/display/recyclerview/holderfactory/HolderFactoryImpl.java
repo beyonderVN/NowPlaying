@@ -1,19 +1,19 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.holderfactory;
+package ngohoanglong.com.nowplaying.display.recyclerview.holderfactory;
 
 import android.view.View;
 
 import ngohoanglong.com.nowplaying.R;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.LoadingMoreHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.MovieDetailHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.MovieHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.NoMoreItemHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.TrailerMovieHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.BaseViewHolder;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.LoadingMoreHolder;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.MovieDetailHolder;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.MovieTrailerItemHolder;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.MovieViewHolder;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.NoMoreItemHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.NoMoreItemHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.LoadingMoreHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieDetailHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.BaseViewHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.LoadingMoreHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.MovieDetailHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.MovieTrailerItemHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.MovieViewHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.NoMoreItemHolder;
 
 
 /**

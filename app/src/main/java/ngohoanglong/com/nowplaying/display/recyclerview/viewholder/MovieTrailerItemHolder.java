@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.viewholder;
+package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
 import android.animation.ValueAnimator;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -14,7 +14,7 @@ import com.vnwarriors.advancedui.appcore.common.recyclerviewhelper.PlaceHolderDr
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ngohoanglong.com.nowplaying.R;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.TrailerMovieHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
 
 /**
  * Created by Long on 10/12/2016.

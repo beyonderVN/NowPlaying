@@ -1,10 +1,10 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.viewholder;
+package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.LoadingMoreHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.LoadingMoreHM;
 
 /**
  * Created by Long on 10/5/2016.

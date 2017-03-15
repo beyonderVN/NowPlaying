@@ -8,8 +8,8 @@ import java.util.List;
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
 import ngohoanglong.com.nowplaying.util.delegate.BaseState;
 import ngohoanglong.com.nowplaying.util.delegate.BaseStateViewModel;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.BaseHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.LoadingMoreHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.LoadingMoreHM;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 

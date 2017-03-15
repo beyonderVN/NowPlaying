@@ -22,7 +22,7 @@ public class DynamicHeightImageView extends ImageView {
 
     public void setRatio(double ratio) {
         whRatio = ratio;
-        Log.d(TAG, "setRatio: "+whRatio);
+//        Log.d(TAG, "setRatio: "+whRatio);
     }
 
     @Override
@@ -68,18 +68,25 @@ public class DynamicHeightImageView extends ImageView {
 //                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //            }
 //        }
-        if (!(getDrawable() == null)) {
-            int width = getDrawable().getIntrinsicWidth();
-            int height = getDrawable().getIntrinsicHeight();
-            Log.d(TAG, "onMeasure: "+width+"/"+height);
-            if (height > 0 && width > 0) {
-                whRatio = (double) height / (double) width;
-                setMeasuredDimension(getMeasuredWidth(), (int) (whRatio * getMeasuredWidth()));
-            }
-        }else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
+        		if (whRatio != 0) {
+                    int width = getMeasuredWidth();
+                    int height = (int) (whRatio * width);
+                    setMeasuredDimension(width, height);
+                }else{
+//			Log.d(TAG, "onMeasure: "+whRatio);
+                        if (!(getDrawable() == null)) {
+                            int width = getDrawable().getIntrinsicWidth();
+                            int height = getDrawable().getIntrinsicHeight();
+                            Log.d(TAG, "onMeasure: " + width + "/" + height);
+                            if (height > 0 && width > 0) {
+                                whRatio = (double) height / (double) width;
+                                setMeasuredDimension(getMeasuredWidth(), (int) (whRatio * getMeasuredWidth()));
+                            }
+                        } else {
+                            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+                        }
 
-    }
+                    }
+                }
 
 }

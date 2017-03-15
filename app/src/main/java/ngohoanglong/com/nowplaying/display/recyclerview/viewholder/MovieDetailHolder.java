@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.viewholder;
+package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
@@ -11,7 +11,7 @@ import com.vnwarriors.advancedui.appcore.common.DynamicHeightImageView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ngohoanglong.com.nowplaying.R;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.MovieDetailHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieDetailHM;
 
 /**
  * Created by Long on 10/5/2016.

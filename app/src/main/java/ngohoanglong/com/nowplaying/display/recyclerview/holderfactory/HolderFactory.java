@@ -1,8 +1,8 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.holderfactory;
+package ngohoanglong.com.nowplaying.display.recyclerview.holderfactory;
 
 import android.view.View;
 
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.BaseViewHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.BaseViewHolder;
 
 
 /**

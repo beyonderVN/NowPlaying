@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.holdermodel;
+package ngohoanglong.com.nowplaying.display.recyclerview.holdermodel;
 
 
 

@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview;
+package ngohoanglong.com.nowplaying.display.recyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

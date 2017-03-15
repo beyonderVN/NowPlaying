@@ -1,12 +1,12 @@
-package ngohoanglong.com.nowplaying.util.recyclerview;
+package ngohoanglong.com.nowplaying.display.recyclerview;
 
 import android.databinding.ObservableList;
 import android.support.v7.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
 
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.BaseHM;
-import ngohoanglong.com.nowplaying.util.recyclerview.viewholder.BaseViewHolder;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.viewholder.BaseViewHolder;
 
 /**
  * Created by nongdenchet on 1/5/16.

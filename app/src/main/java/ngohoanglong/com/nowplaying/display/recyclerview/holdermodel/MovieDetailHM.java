@@ -1,18 +1,18 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.holdermodel;
+package ngohoanglong.com.nowplaying.display.recyclerview.holdermodel;
 
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
-import ngohoanglong.com.nowplaying.util.recyclerview.holderfactory.ViewTypeFactory;
+import ngohoanglong.com.nowplaying.display.recyclerview.holderfactory.ViewTypeFactory;
 
 /**
  * Created by Long on 10/5/2016.
  */
 
-public class MovieHM extends BaseHM{
+public class MovieDetailHM extends BaseHM{
 
     private Movie movie;
 
-    public MovieHM(Movie movie) {
+    public MovieDetailHM(Movie movie) {
         this.movie = movie;
     }
     public Movie getMovie() {

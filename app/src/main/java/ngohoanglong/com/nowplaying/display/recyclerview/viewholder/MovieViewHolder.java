@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.viewholder;
+package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -13,7 +13,7 @@ import com.vnwarriors.advancedui.appcore.common.recyclerviewhelper.PlaceHolderDr
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ngohoanglong.com.nowplaying.R;
-import ngohoanglong.com.nowplaying.util.recyclerview.holdermodel.MovieHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
 
 import static ngohoanglong.com.nowplaying.R.id.wrap;
 

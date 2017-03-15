@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.util.recyclerview.viewholder;
+package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
