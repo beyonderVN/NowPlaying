@@ -1,9 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/iv_thumbnail"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:scaleType="centerCrop">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.vnwarriors.advancedui.appcore.common.DynamicHeightImageView
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription=""
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        />
 
-</ImageView>
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/detail_bg"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="0dp"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Title"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+
+                    />
+                <TextView
+                    android:id="@+id/tvReleaseDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Release date: "
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    />
+                <TextView
+                    android:id="@+id/tvPopularity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Popularity: "
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    />
+                <com.iarcuschin.simpleratingbar.SimpleRatingBar
+                    android:id="@+id/srbStar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srb_starSize="12dp"
+                    app:srb_numberOfStars="10"
+                    app:srb_stepSize="0.1"
+                    app:srb_borderColor="@color/yellow"
+                    app:srb_fillColor="@color/yellow"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Overview: "
+                    android:textSize="16sp"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="12dp"
+                    />
+                <TextView
+                    android:id="@+id/tvOverview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Overview: "
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+
+                    />
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</FrameLayout>

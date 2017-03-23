@@ -1,7 +1,5 @@
 package ngohoanglong.com.nowplaying.display.recyclerview.viewholder;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.TextView;
@@ -40,21 +38,8 @@ public class MovieViewHolder extends BaseViewHolder<MovieHM> {
     public  void bind(MovieHM item) {
         MovieHM movieVM = item;
         des.setText(movieVM.getMovie().getTitle());
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                View sharedView = imageView;
-                ActivityOptions ops = ActivityOptions.makeSceneTransitionAnimation((Activity) itemView.getContext(),
-                        sharedView,
-                        itemView.getContext().getString(R.string.detail_image));
-//                Navigator.navigateToDetailActivity(v.getContext(), movieVM,ops);
-            }
-        });
         imageView.setRatio(1.5);
-//        Glide.with(itemView.getContext())
-//                .load("https://image.tmdb.org/t/p/w342"+item.getMovie().getPosterPath())
-//                .placeholder(PlaceHolderDrawableHelper.getBackgroundDrawable())
-//                .into(imageView);
+
         Picasso.with(itemView.getContext()).load("https://image.tmdb.org/t/p/w342"+item.getMovie().getPosterPath())
                 .placeholder(PlaceHolderDrawableHelper.getBackgroundDrawable(item.getMovie().getId()))
                 .into(imageView);

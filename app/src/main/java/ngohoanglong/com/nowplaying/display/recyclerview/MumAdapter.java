@@ -48,9 +48,11 @@ public class MumAdapter extends BaseRecyclerViewAdapter<BaseHM> {
         if(holder!=null){
             BaseHM baseHM = items.get(position);
             holder.bind(baseHM);
-            holder.itemView.setOnClickListener(v -> {
-                onSelectItemClickEvent.onItemClick(position, baseHM);
-            });
+            if(onSelectItemClickEvent!=null){
+                holder.itemView.setOnClickListener(v -> {
+                    onSelectItemClickEvent.onItemClick(position, baseHM);
+                });
+            }
         }
     }
 

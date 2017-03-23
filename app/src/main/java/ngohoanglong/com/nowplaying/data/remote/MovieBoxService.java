@@ -37,11 +37,11 @@ public class MovieBoxService {
 
     @RxLogObservable
     public Observable<List<Movie>> getMovies() {
-        return movieBoxApi.getMovieList()
+        return movieBoxApi.getNowPlayingList()
                 .map(new Func1<JsonObject, List<Movie>>() {
                     @Override
                     public List<Movie> call(JsonObject jsonObject) {
-                        Log.d(TAG, "getMovieList: "+jsonObject.toString());
+                        Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
                         Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
                         List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
                         return movies;
@@ -51,12 +51,12 @@ public class MovieBoxService {
 
     @RxLogObservable
     public Observable<List<Movie>> getMovies(int page) {
-        return movieBoxApi.getMovieList(page)
+        return movieBoxApi.getNowPlayingList(page)
                 .delay(2, TimeUnit.SECONDS)
                 .map(new Func1<JsonObject, List<Movie>>() {
                     @Override
                     public List<Movie> call(JsonObject jsonObject) {
-                        Log.d(TAG, "getMovieList: "+jsonObject.toString());
+                        Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
                         Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
                         List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
                         return movies;

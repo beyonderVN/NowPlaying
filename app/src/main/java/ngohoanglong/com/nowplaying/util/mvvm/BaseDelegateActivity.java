@@ -14,7 +14,7 @@ import ngohoanglong.com.nowplaying.util.delegate.LifecycleDelegate;
  */
 
 public abstract class BaseDelegateActivity extends AppCompatActivity {
-    protected List<LifecycleDelegate> lifecycleDelegates = new ArrayList<>();
+    public List<LifecycleDelegate> lifecycleDelegates = new ArrayList<>();
 
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {

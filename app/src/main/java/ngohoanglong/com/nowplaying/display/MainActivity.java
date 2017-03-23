@@ -159,4 +159,13 @@ public class MainActivity extends BaseDelegateActivity {
                 .takeUntil(rxDelegate.stopEvent())
                 .subscribe(aBoolean -> isLoadingMore=aBoolean);
     }
+
+    @Override
+    public void onBackPressed() {
+        if(dragPanelMovieDetailDelegate.draggablePanel.isMaximized()){
+            dragPanelMovieDetailDelegate.draggablePanel.minimize();
+            return;
+        }
+        super.onBackPressed();
+    }
 }

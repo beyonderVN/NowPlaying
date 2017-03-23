@@ -1,7 +1,8 @@
 package ngohoanglong.com.nowplaying.display;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -23,8 +24,11 @@ import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
 import ngohoanglong.com.nowplaying.display.recyclerview.MumAdapter;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
+import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
 import ngohoanglong.com.nowplaying.util.delegate.BaseDelegate;
 import ngohoanglong.com.nowplaying.util.delegate.RxDelegate;
+import ngohoanglong.com.nowplaying.util.delegate.StateDelegate;
+import ngohoanglong.com.nowplaying.util.mvvm.BaseDelegateActivity;
 import rx.Subscriber;
 
 
@@ -36,17 +40,30 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
 
     @BindView(R.id.draggable_panel)
     DraggablePanel draggablePanel;
-    FragmentActivity activity;
+    BaseDelegateActivity activity;
+
+    Movie movie;
+    RxDelegate rxDelegate;
 
     @Inject
     MovieDetailViewModel movieDetailViewModel;
+    public StateDelegate movieDetailStateDelegate = new StateDelegate() {
+        @NonNull
+        @Override
+        protected MovieDetailViewModel createViewModel() {
+            return movieDetailViewModel;
+        }
 
+        @NonNull
+        @Override
+        protected MovieDetailViewModel.MovieDetailState createStateModel() {
+            return new MovieDetailViewModel.MovieDetailState();
+        }
+    };
 
-    RxDelegate rxDelegate;
-    public DragPanelMovieDetailDelegate(FragmentActivity activity, RxDelegate rxDelegate) {
+    public DragPanelMovieDetailDelegate(BaseDelegateActivity activity, RxDelegate rxDelegate) {
         this.activity = activity;
         this.rxDelegate = rxDelegate;
-        this.movieDetailViewModel = movieDetailViewModel;
     }
 
     @Override
@@ -54,26 +71,29 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
         NowPlayingApplication.appComponent
         .plus(new MovieModule())
         .inject(this);
+        movieDetailStateDelegate.onCreate(bundle);
         ButterKnife.bind(this, activity);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        movieDetailStateDelegate.onSaveInstanceState(bundle);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        movieDetailStateDelegate.onStart();
         initializeYoutubeFragment();
         initializeDraggablePanel();
         hookDraggablePanelListeners();
+
     }
 
-    private YouTubePlayer youtubePlayer;
+    private static YouTubePlayer youtubePlayer;
     private YouTubePlayerSupportFragment youtubeFragment;
 
-    private static final String VIDEO_KEY = "gsjtg7m1MMM";
-    private static final String VIDEO_POSTER_THUMBNAIL =
-            "http://4.bp.blogspot.com/-BT6IshdVsoA/UjfnTo_TkBI/AAAAAAAAMWk/JvDCYCoFRlQ/s1600/"
-                    + "xmenDOFP.wobbly.1.jpg";
-
-    private static final String VIDEO_POSTER_TITLE = "X-Men: Days of Future Past";
 
 
     /**
@@ -81,15 +101,21 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
      * reproduce the YouTube video represented with a YouTube url.
      */
 
-
     private void initializeYoutubeFragment() {
+        String urlTrailer = ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).getUrlTrailer();
         youtubeFragment = YouTubePlayerSupportFragment.newInstance();
         youtubeFragment.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-
             @Override public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                           YouTubePlayer player, boolean wasRestored) {
                 if (!wasRestored) {
+
                     youtubePlayer = player;
+
+                    if(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        youtubePlayer.setFullscreen(true);
+                    }
+                    youtubePlayer.loadVideo(urlTrailer);
+                    youtubePlayer.setShowFullscreenButton(true);
                 }
             }
 
@@ -102,12 +128,17 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
     /**
      * Initialize and configure the DraggablePanel widget with two fragments and some attributes.
      */
+    MoviePosterFragment moviePosterFragment;
     private void initializeDraggablePanel() {
+        boolean isVisible = ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).isVisibale();
+        draggablePanel.setVisibility(isVisible==true?View.VISIBLE:View.GONE);
         draggablePanel.setFragmentManager(activity.getSupportFragmentManager());
         draggablePanel.setTopFragment(youtubeFragment);
-        MoviePosterFragment moviePosterFragment = new MoviePosterFragment();
-        moviePosterFragment.setPoster(VIDEO_POSTER_THUMBNAIL);
-        moviePosterFragment.setPosterTitle(VIDEO_POSTER_TITLE);
+        moviePosterFragment = new MoviePosterFragment();
+        movie = ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).getMovie();
+        if (movie != null) {
+            moviePosterFragment.setMovie(movie);
+        }
         draggablePanel.setBottomFragment(moviePosterFragment);
         draggablePanel.initializeView();
     }
@@ -157,9 +188,16 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
     @Override
     public void onItemClick(int pos, BaseHM baseHM) {
         if(draggablePanel.getVisibility()== View.GONE)draggablePanel.setVisibility(View.VISIBLE);
+        if(baseHM instanceof TrailerMovieHM){
+            movie = ((TrailerMovieHM) baseHM).getMovie();
+        }else{
+            movie = ((MovieHM) baseHM).getMovie();
+        }
+        ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).setMovie(movie);
+        ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).setVisibale(draggablePanel.getVisibility()== View.VISIBLE);
 
-        Movie movie = ((MovieHM) baseHM).getMovie();
         Log.d("onItemClick", "onItemClick: "+movie.toString());
+        moviePosterFragment.setDetail(movie);
         movieDetailViewModel.getYouTubeUrl(movie.getId())
         .takeUntil(rxDelegate.stopEvent())
         .subscribe(new Subscriber<String>() {
@@ -175,6 +213,10 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
 
             @Override
             public void onNext(String s) {
+                ((MovieDetailViewModel.MovieDetailState)movieDetailViewModel.getState()).setUrlTrailer(s);
+                if(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    youtubePlayer.setFullscreen(true);
+                }
                 youtubePlayer.loadVideo(s);
                 youtubePlayer.setShowFullscreenButton(true);
             }

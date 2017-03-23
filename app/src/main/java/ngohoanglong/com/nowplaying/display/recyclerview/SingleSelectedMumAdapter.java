@@ -28,11 +28,13 @@ public class SingleSelectedMumAdapter extends MumAdapter {
             BaseHM baseHM = items.get(position);
             baseHM.setCheck(position == selectedPosition);
             holder.bind(baseHM);
-            holder.itemView.setOnClickListener(v -> {
-                selectedPosition = position;
-                onSelectItemClickEvent.onItemClick(position, baseHM);
-                notifyDataSetChanged();
-            });
+            selectedPosition = position;
+            notifyDataSetChanged();
+            if(onSelectItemClickEvent!=null){
+                holder.itemView.setOnClickListener(v -> {
+                    onSelectItemClickEvent.onItemClick(position, baseHM);
+                });
+            }
         }
     }
 

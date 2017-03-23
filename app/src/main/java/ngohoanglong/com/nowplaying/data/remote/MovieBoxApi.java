@@ -17,9 +17,19 @@ public interface MovieBoxApi {
 
 
     @GET("movie/now_playing")
-    Observable<JsonObject> getMovieList();
+    Observable<JsonObject> getNowPlayingList();
     @GET("movie/now_playing")
-    Observable<JsonObject> getMovieList(@Query("page") int page);
+    Observable<JsonObject> getNowPlayingList(@Query("page") int page);
+
+    @GET("movie/popular")
+    Observable<JsonObject> getPopularList(@Query("page") int page);
+
+    @GET("movie/latest")
+    Observable<JsonObject> getLastestList(@Query("page") int page);
+
+    @GET("movie/upcoming")
+    Observable<JsonObject> getUpcomingList(@Query("page") int page);
+
     @GET("movie/{id}/trailers")
     Call<JsonObject> getTrailer(@Path("id") int id);
 

@@ -61,7 +61,7 @@ public class MainViewModel extends PostViewModel {
                     .map(new Func1<List<Movie>, List<BaseHM>>() {
                         @Override
                         public List<BaseHM> call(List<Movie> movieList) {
-                            Log.d(TAG, "getMovieList: " + movieList.size());
+                            Log.d(TAG, "getNowPlayingList: " + movieList.size());
                             List<BaseHM> list = new ArrayList<>();
                             for (Movie item : movieList) {
                                 if (item.getVoteAverage() > 7) {
@@ -98,7 +98,7 @@ public class MainViewModel extends PostViewModel {
                 .map(new Func1<List<Movie>, List<BaseHM>>() {
                     @Override
                     public List<BaseHM> call(List<Movie> movieList) {
-                        Log.d(TAG, "getMovieList: " + movieList.size());
+                        Log.d(TAG, "getNowPlayingList: " + movieList.size());
                         List<BaseHM> list = new ArrayList<>();
                         for (Movie item : movieList) {
                             if (item.getVoteAverage() > 5) {

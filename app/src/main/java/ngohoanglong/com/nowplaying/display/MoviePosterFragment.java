@@ -15,20 +15,29 @@
  */
 package ngohoanglong.com.nowplaying.display;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.view.animation.BounceInterpolator;
+import android.widget.TextView;
 
+import com.iarcuschin.simpleratingbar.SimpleRatingBar;
 import com.squareup.picasso.Picasso;
+import com.vnwarriors.advancedui.appcore.common.DynamicHeightImageView;
+import com.vnwarriors.advancedui.appcore.common.recyclerviewhelper.PlaceHolderDrawableHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import ngohoanglong.com.nowplaying.R;
+import ngohoanglong.com.nowplaying.data.model.Movie;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -38,46 +47,65 @@ import ngohoanglong.com.nowplaying.R;
  */
 public class MoviePosterFragment extends Fragment {
 
-  @BindView(R.id.iv_thumbnail)
-  ImageView thumbnailImageView;
+    @BindView(R.id.iv_thumbnail)
+    DynamicHeightImageView thumbnailImageView;
 
-  private String videoPosterThumbnail;
-  private String posterTitle;
+    @Nullable
+    @BindView(R.id.tvOverview)
+    TextView tvOverview;
+    @Nullable
+    @BindView(R.id.tvTitle)
+    TextView tvTitle;
+    @Nullable
+    @BindView(R.id.tvReleaseDate)
+    TextView tvReleaseDate;
+    @Nullable
+    @BindView(R.id.tvPopularity)
+    TextView tvPopularity;
+    @Nullable
+    @BindView(R.id.srbStar)
+    SimpleRatingBar srbStart;
 
-  /**
-   * Override method used to initialize the fragment.
-   */
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_movie_poster, container, false);
-    ButterKnife.bind(this, view);
-    Picasso.with(getActivity())
-        .load(videoPosterThumbnail)
-        .placeholder(R.drawable.xmen_placeholder)
-        .into(thumbnailImageView);
-    return view;
-  }
 
-  /**
-   * Show the poster image in the thumbnailImageView widget.
-   */
-  public void setPoster(String videoPosterThumbnail) {
-    this.videoPosterThumbnail = videoPosterThumbnail;
-  }
+    private Movie movie;
 
-  /**
-   * Store the poster title to show it when the thumbanil view is clicked.
-   */
-  public void setPosterTitle(String posterTitle) {
-    this.posterTitle = posterTitle;
-  }
+    /**
+     * Override method used to initialize the fragment.
+     */
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_movie_poster, container, false);
+        ButterKnife.bind(this, view);
+        if(movie!=null){
+            setDetail(movie);
+        }
 
-  /**
-   * Method triggered when the iv_thumbnail widget is clicked. This method shows a toast with the
-   * poster information.
-   */
-  @OnClick(R.id.iv_thumbnail) void onThubmnailClicked() {
-    Toast.makeText(getActivity(), posterTitle, Toast.LENGTH_SHORT).show();
-  }
+        return view;
+    }
+
+    public void setMovie(Movie movie){
+        this.movie = movie;
+    }
+    public void setDetail(Movie movie) {
+        this.movie = movie;
+        thumbnailImageView.setRatio(1.5);
+        Picasso.with(getActivity()).load("https://image.tmdb.org/t/p/w342"+movie.getPosterPath())
+                    .placeholder(PlaceHolderDrawableHelper.getBackgroundDrawable(movie.getId()))
+                    .into(thumbnailImageView);
+
+        tvOverview.setText(movie.getOverview());
+        tvTitle.setText(movie.getTitle());
+        tvReleaseDate.setText(Html.fromHtml("<font color=\"BLUE\"><b>Release Date: </b></font>"+movie.getReleaseDate()+""));
+        tvPopularity.setText(Html.fromHtml("<font color=\"BLUE\"><b>Popularity: </b></font>"+movie.getPopularity()+""));
+        Log.d(TAG, "movieVM.getMovie().getVoteAverage() "+movie.getVoteAverage());
+
+        SimpleRatingBar.AnimationBuilder builder = srbStart.getAnimationBuilder()
+                .setRepeatCount(0)
+                .setRepeatMode(ValueAnimator.INFINITE)
+                .setInterpolator(new BounceInterpolator())
+                .setRatingTarget(movie.getVoteAverage())
+                ;
+        builder.start();
+    }
 }
