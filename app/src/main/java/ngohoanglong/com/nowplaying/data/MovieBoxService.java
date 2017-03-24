@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.data.remote;
+package ngohoanglong.com.nowplaying.data;
 
 
 import android.util.Log;
@@ -19,16 +19,25 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
+import ngohoanglong.com.nowplaying.data.remote.MovieBoxApi;
+import ngohoanglong.com.nowplaying.data.request.BaseRequest;
+import ngohoanglong.com.nowplaying.data.request.RequestMovieBySection;
+import ngohoanglong.com.nowplaying.data.request.RequestSection;
+import ngohoanglong.com.nowplaying.data.response.BaseResponse;
+import ngohoanglong.com.nowplaying.data.response.ResponseSection;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
 
+import static ngohoanglong.com.nowplaying.data.RequestFactory.RequestType.*;
+
 
 @Singleton
-public class MovieBoxService {
+public class MovieBoxService implements RequestFactory {
     private static final String TAG = "MovieBoxService";
 
     private final MovieBoxApi movieBoxApi;
+
 
     @Inject
     public MovieBoxService(MovieBoxApi serviceApi) {
@@ -90,4 +99,40 @@ public class MovieBoxService {
         });
     }
 
+
+    @RxLogObservable
+    public Observable<BaseResponse> getMovieSection(RequestSection requestSection) {
+        return Observable.create(subscriber -> {
+            subscriber.onNext(new ResponseSection());
+        });
+    }
+    @RxLogObservable
+    public Observable<BaseResponse> getMovieBySection(RequestMovieBySection requestSection) {
+        return Observable.create(subscriber -> {
+            subscriber.onNext(new ResponseSection());
+        });
+    }
+
+
+    @Override
+    public Observable<BaseResponse> sendRequest(BaseRequest requestType) {
+        switch (requestType.getType(this)){
+            case REQUEST_SECTION :
+                return getMovieSection((RequestSection) requestType);
+            case REQUEST_MOVIE_BY_SECTION :
+                return getMovieBySection((RequestMovieBySection) requestType);
+
+        }
+        return null;
+    }
+
+    @Override
+    public RequestType getRequestType(RequestSection requestSection) {
+        return REQUEST_SECTION;
+    }
+
+    @Override
+    public RequestType getRequestType(RequestMovieBySection requestMovieBySection) {
+        return REQUEST_MOVIE_BY_SECTION;
+    }
 }

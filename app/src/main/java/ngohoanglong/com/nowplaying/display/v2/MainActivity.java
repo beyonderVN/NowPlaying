@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.display;
+package ngohoanglong.com.nowplaying.display.v2;
 
 import android.databinding.ObservableArrayList;
 import android.os.Bundle;
@@ -53,11 +53,11 @@ public class MainActivity extends BaseDelegateActivity {
         }
     };
 
-    private DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate = new DragPanelMovieDetailDelegate(this,rxDelegate);
+//    private DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate = new DragPanelMovieDetailDelegate(this,rxDelegate);
     {
         lifecycleDelegates.add(rxDelegate);
         lifecycleDelegates.add(stateDelegate);
-        lifecycleDelegates.add(dragPanelMovieDetailDelegate);
+//        lifecycleDelegates.add(dragPanelMovieDetailDelegate);
     }
 
     @BindInt(R.integer.column_num)
@@ -152,7 +152,7 @@ public class MainActivity extends BaseDelegateActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        MumAdapter baseAdapter = new MumAdapter(this, new HolderFactoryImpl(),mainViewModel.getPosts(), dragPanelMovieDetailDelegate);
+        MumAdapter baseAdapter = new MumAdapter(this, new HolderFactoryImpl(),mainViewModel.getPosts());
         listRV.setAdapter(baseAdapter);
         mainViewModel.bindViewModel();
         mainViewModel.getIsLoadingMore()
@@ -162,10 +162,10 @@ public class MainActivity extends BaseDelegateActivity {
 
     @Override
     public void onBackPressed() {
-        if(dragPanelMovieDetailDelegate.draggablePanel.isMaximized()){
-            dragPanelMovieDetailDelegate.draggablePanel.minimize();
-            return;
-        }
-        super.onBackPressed();
+//        if(dragPanelMovieDetailDelegate.draggablePanel.isMaximized()){
+//            dragPanelMovieDetailDelegate.draggablePanel.minimize();
+//            return;
+//        }
+//        super.onBackPressed();
     }
 }

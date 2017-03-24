@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.display;
+package ngohoanglong.com.nowplaying.display.v1;
 
 import android.content.res.Resources;
 import android.databinding.ObservableArrayList;
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxService;
+import ngohoanglong.com.nowplaying.data.MovieBoxService;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
@@ -23,8 +23,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
-import static ngohoanglong.com.nowplaying.display.MainViewModel.Mapper.tranToMovieTrailerVM;
-import static ngohoanglong.com.nowplaying.display.MainViewModel.Mapper.tranToMovieVM;
+import static ngohoanglong.com.nowplaying.display.v1.MainViewModel.Mapper.tranToMovieTrailerVM;
+import static ngohoanglong.com.nowplaying.display.v1.MainViewModel.Mapper.tranToMovieVM;
 
 /**
  * Created by Long on 3/14/2017.

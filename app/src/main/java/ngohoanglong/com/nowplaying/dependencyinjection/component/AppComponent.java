@@ -6,7 +6,7 @@ import dagger.Component;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.AppModule;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.DataModule;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
-import ngohoanglong.com.nowplaying.display.MainActivity;
+import ngohoanglong.com.nowplaying.display.v1.MainActivity;
 
 
 /**
@@ -20,4 +20,5 @@ public interface AppComponent {
 
     void inject(MainActivity mainActivity);
 
+    void inject(ngohoanglong.com.nowplaying.display.v2.MainActivity mainActivity);
 }

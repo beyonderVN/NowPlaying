@@ -10,7 +10,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import ngohoanglong.com.nowplaying.data.remote.MovieBoxApi;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxService;
+import ngohoanglong.com.nowplaying.data.MovieBoxService;
 import ngohoanglong.com.nowplaying.data.remote.MovieBoxServiceFactory;
 import ngohoanglong.com.nowplaying.manager.AuthManager;
 import ngohoanglong.com.nowplaying.manager.NetworkingManager;

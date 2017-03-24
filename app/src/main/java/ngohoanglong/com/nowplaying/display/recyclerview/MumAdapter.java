@@ -27,10 +27,14 @@ public class MumAdapter extends BaseRecyclerViewAdapter<BaseHM> {
         this.context = context;
     }
     public MumAdapter(Context context, HolderFactory holderFactory,
-                      ObservableArrayList<BaseHM>  observableArrayList,
-                      OnSelectItemClickEvent onSelectItemClickEvent) {
+                      ObservableArrayList<BaseHM>  observableArrayList) {
         this(context,observableArrayList);
         this.holderFactory = holderFactory;
+    }
+    public MumAdapter(Context context, HolderFactory holderFactory,
+                      ObservableArrayList<BaseHM>  observableArrayList,
+                      OnSelectItemClickEvent onSelectItemClickEvent) {
+        this(context,holderFactory,observableArrayList);
         this.onSelectItemClickEvent = onSelectItemClickEvent;
     }
 

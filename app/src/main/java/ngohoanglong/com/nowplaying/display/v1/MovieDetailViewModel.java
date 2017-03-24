@@ -1,11 +1,11 @@
-package ngohoanglong.com.nowplaying.display;
+package ngohoanglong.com.nowplaying.display.v1;
 
 import android.content.res.Resources;
 
 import javax.inject.Inject;
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxService;
+import ngohoanglong.com.nowplaying.data.MovieBoxService;
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
 import ngohoanglong.com.nowplaying.util.delegate.BaseState;
 import ngohoanglong.com.nowplaying.util.delegate.BaseStateViewModel;

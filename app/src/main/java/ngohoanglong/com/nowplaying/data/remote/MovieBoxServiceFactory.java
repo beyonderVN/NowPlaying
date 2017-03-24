@@ -48,7 +48,7 @@ public class MovieBoxServiceFactory {
                                 .addQueryParameter("api_key", BuildConfig.MOVIE_API_KEY)
                                 .build();
 
-                        // Request customization: add request headers
+                        // BaseRequest customization: add request headers
                         Request.Builder requestBuilder = original.newBuilder()
                                 .url(url);
 

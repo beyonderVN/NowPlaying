@@ -1,4 +1,4 @@
-package ngohoanglong.com.nowplaying.display;
+package ngohoanglong.com.nowplaying.display.v1;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
