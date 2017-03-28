@@ -14,15 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <activity android:name=".display.v1.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity android:name=".display.v2.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity-alias
             android:name=".laucher"
-            android:targetActivity=".display.v2.MainActivity">
+            android:targetActivity=".display.v2.MainActivity"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -163,6 +163,7 @@ public class MainActivity extends BaseDelegateActivity {
     @Override
     public void onBackPressed() {
         if(dragPanelMovieDetailDelegate.draggablePanel.isMaximized()){
+            dragPanelMovieDetailDelegate.youtubePlayer.setFullscreen(false);
             dragPanelMovieDetailDelegate.draggablePanel.minimize();
             return;
         }

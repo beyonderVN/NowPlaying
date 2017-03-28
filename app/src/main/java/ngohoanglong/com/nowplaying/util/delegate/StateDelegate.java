@@ -28,7 +28,10 @@ public abstract class StateDelegate<M extends BaseStateViewModel, S extends Base
         if (state == null) {
             state = createStateModel();
         }
-        viewModel.returnInstanceState(state);
+        if(state!=null){
+            viewModel.returnInstanceState(state);
+        }
+
     }
 
     /**

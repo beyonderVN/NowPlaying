@@ -4,6 +4,7 @@ import dagger.Subcomponent;
 import ngohoanglong.com.nowplaying.dependencyinjection.ActivityScope;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
 import ngohoanglong.com.nowplaying.display.v1.DragPanelMovieDetailDelegate;
+import ngohoanglong.com.nowplaying.display.v2.MovieListFragment;
 
 
 /**
@@ -13,4 +14,6 @@ import ngohoanglong.com.nowplaying.display.v1.DragPanelMovieDetailDelegate;
 @Subcomponent(modules = {MovieModule.class})
 public interface MovieComponent {
     void inject(DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate);
+
+    void inject(MovieListFragment movieListFragment);
 }

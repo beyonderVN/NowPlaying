@@ -91,7 +91,7 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
 
     }
 
-    private static YouTubePlayer youtubePlayer;
+    YouTubePlayer youtubePlayer;
     private YouTubePlayerSupportFragment youtubeFragment;
 
 
@@ -110,7 +110,6 @@ public class DragPanelMovieDetailDelegate extends BaseDelegate implements MumAda
                 if (!wasRestored) {
 
                     youtubePlayer = player;
-
                     if(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                         youtubePlayer.setFullscreen(true);
                     }

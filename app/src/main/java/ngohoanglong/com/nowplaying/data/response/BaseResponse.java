@@ -7,4 +7,22 @@ import java.io.Serializable;
  */
 
 public class BaseResponse implements Serializable {
+    public static enum ResponseStatus{
+        ISSUCCESSFULL,
+        FAIL
+    }
+
+    protected ResponseStatus isSuccessfull;
+
+    public BaseResponse(ResponseStatus isSuccessfull) {
+        this.isSuccessfull = isSuccessfull;
+    }
+
+    public ResponseStatus isSuccessfull() {
+        return isSuccessfull;
+    }
+
+    public void setSuccessfull(ResponseStatus successfull) {
+        isSuccessfull = successfull;
+    }
 }

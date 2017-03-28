@@ -22,14 +22,17 @@ import ngohoanglong.com.nowplaying.data.model.Movie;
 import ngohoanglong.com.nowplaying.data.remote.MovieBoxApi;
 import ngohoanglong.com.nowplaying.data.request.BaseRequest;
 import ngohoanglong.com.nowplaying.data.request.RequestMovieBySection;
-import ngohoanglong.com.nowplaying.data.request.RequestSection;
+import ngohoanglong.com.nowplaying.data.request.RequestNowPlaying;
+import ngohoanglong.com.nowplaying.data.request.RequestSectionList;
 import ngohoanglong.com.nowplaying.data.response.BaseResponse;
+import ngohoanglong.com.nowplaying.data.response.ResponseMovieBySection;
 import ngohoanglong.com.nowplaying.data.response.ResponseSection;
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
 
-import static ngohoanglong.com.nowplaying.data.RequestFactory.RequestType.*;
+import static ngohoanglong.com.nowplaying.data.RequestFactory.RequestType.REQUEST_MOVIE_BY_SECTION;
+import static ngohoanglong.com.nowplaying.data.RequestFactory.RequestType.REQUEST_NOW_PLAYING;
+import static ngohoanglong.com.nowplaying.data.RequestFactory.RequestType.REQUEST_SECTION;
 
 
 @Singleton
@@ -47,29 +50,27 @@ public class MovieBoxService implements RequestFactory {
     @RxLogObservable
     public Observable<List<Movie>> getMovies() {
         return movieBoxApi.getNowPlayingList()
-                .map(new Func1<JsonObject, List<Movie>>() {
-                    @Override
-                    public List<Movie> call(JsonObject jsonObject) {
-                        Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                        Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                        List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
-                        return movies;
-                    }
+                .map(jsonObject -> {
+                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                    List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    return movies;
                 });
     }
 
     @RxLogObservable
     public Observable<List<Movie>> getMovies(int page) {
+        Log.d(TAG, "getMovies: page"+page);
         return movieBoxApi.getNowPlayingList(page)
                 .delay(2, TimeUnit.SECONDS)
-                .map(new Func1<JsonObject, List<Movie>>() {
-                    @Override
-                    public List<Movie> call(JsonObject jsonObject) {
-                        Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                        Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                        List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
-                        return movies;
-                    }
+                .map(jsonObject -> {
+                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
+                    List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    return movies;
+                })
+                .doOnNext(movies -> {
+
                 });
     }
 
@@ -101,33 +102,59 @@ public class MovieBoxService implements RequestFactory {
 
 
     @RxLogObservable
-    public Observable<BaseResponse> getMovieSection(RequestSection requestSection) {
+    public Observable<BaseResponse> getMovieSectionList(RequestSectionList requestSectionList) {
         return Observable.create(subscriber -> {
-            subscriber.onNext(new ResponseSection());
+
+            List<BaseRequest> baseRequests = new ArrayList<BaseRequest>();
+            for (int i = 0; i < 1; i++) {
+                baseRequests.add(new RequestNowPlaying(1,"Now Playing "+i));
+            }
+            ResponseSection responseSection = new ResponseSection(BaseResponse.ResponseStatus.ISSUCCESSFULL,
+                    "Movie Review",
+                    baseRequests);
+            subscriber.onNext(responseSection);
+            subscriber.onCompleted();
         });
     }
     @RxLogObservable
     public Observable<BaseResponse> getMovieBySection(RequestMovieBySection requestSection) {
         return Observable.create(subscriber -> {
-            subscriber.onNext(new ResponseSection());
+            subscriber.onNext(new ResponseSection(BaseResponse.ResponseStatus.ISSUCCESSFULL));
+            subscriber.onCompleted();
         });
     }
+    @RxLogObservable
+    public Observable<BaseResponse> getMovieBySection(RequestNowPlaying requestNowPlaying) {
+        Log.d(TAG, "getMovieBySection: "+requestNowPlaying.toString());
+        return getMovies(requestNowPlaying.getPage())
+                .map(movies -> new ResponseMovieBySection(
+                        BaseResponse.ResponseStatus.ISSUCCESSFULL,
+                        movies,
+                        requestNowPlaying.upPage()
+                ));
+    }
 
+    @Override
+    public RequestType getRequestType(RequestNowPlaying requestNowPlaying) {
+        return REQUEST_NOW_PLAYING;
+    }
 
     @Override
     public Observable<BaseResponse> sendRequest(BaseRequest requestType) {
         switch (requestType.getType(this)){
             case REQUEST_SECTION :
-                return getMovieSection((RequestSection) requestType);
+                return getMovieSectionList((RequestSectionList) requestType);
             case REQUEST_MOVIE_BY_SECTION :
                 return getMovieBySection((RequestMovieBySection) requestType);
+            case REQUEST_NOW_PLAYING:
+                return getMovieBySection((RequestNowPlaying) requestType);
 
         }
         return null;
     }
 
     @Override
-    public RequestType getRequestType(RequestSection requestSection) {
+    public RequestType getRequestType(RequestSectionList requestSectionList) {
         return REQUEST_SECTION;
     }
 

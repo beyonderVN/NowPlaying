@@ -6,34 +6,38 @@ import android.util.Log;
 
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import ngohoanglong.com.nowplaying.data.model.Movie;
 import ngohoanglong.com.nowplaying.data.MovieBoxService;
+import ngohoanglong.com.nowplaying.data.model.Movie;
+import ngohoanglong.com.nowplaying.data.request.BaseRequest;
+import ngohoanglong.com.nowplaying.data.request.RequestNowPlaying;
+import ngohoanglong.com.nowplaying.data.request.RequestSectionList;
+import ngohoanglong.com.nowplaying.data.response.BaseResponse;
+import ngohoanglong.com.nowplaying.data.response.ResponseSection;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
-import ngohoanglong.com.nowplaying.util.mvvm.PostViewModel;
+import ngohoanglong.com.nowplaying.util.delegate.BaseState;
+import ngohoanglong.com.nowplaying.util.delegate.BaseStateViewModel;
+import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
-
-import static ngohoanglong.com.nowplaying.display.v1.MainViewModel.Mapper.tranToMovieTrailerVM;
-import static ngohoanglong.com.nowplaying.display.v1.MainViewModel.Mapper.tranToMovieVM;
 
 /**
  * Created by Long on 3/14/2017.
  */
 
-public class MainViewModel extends PostViewModel {
+public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
     private static final String TAG = "MainViewModel";
     protected PublishSubject<Boolean> refresh = PublishSubject.create();
     MovieBoxService service;
+
 
     @Inject
     public MainViewModel(ThreadScheduler threadScheduler,
@@ -45,109 +49,110 @@ public class MainViewModel extends PostViewModel {
     }
 
     public boolean isNeedLoadFirst() {
-        Log.d(TAG, "isNeedLoadFirst: " + posts.size());
-        return posts == null || posts.isEmpty();
+        return getState().sections == null || getState().sections.isEmpty();
     }
 
     @RxLogObservable
-    public void loadFirst() {
-
+    public Observable<List<Section>> loadFirst() {
         if (isNeedLoadFirst()) {
-            service.sendRequest(page)
-//                    .delay(0, TimeUnit.SECONDS)
+            return service.sendRequest(new RequestSectionList())
                     .takeUntil(refresh)
                     .compose(withScheduler())
-                    .map(new Func1<List<Movie>, List<BaseHM>>() {
-                        @Override
-                        public List<BaseHM> call(List<Movie> movieList) {
-                            Log.d(TAG, "getNowPlayingList: " + movieList.size());
-                            List<BaseHM> list = new ArrayList<>();
-                            for (Movie item : movieList) {
-                                if (item.getVoteAverage() > 7) {
-                                    list.add(tranToMovieTrailerVM(item));
-                                } else {
-                                    list.add(tranToMovieVM(item));
-                                }
-                            }
-                            return list;
+                    .doOnNext(baseResponse -> Log.d(TAG, "BaseResponse: "+(baseResponse.isSuccessfull()==BaseResponse.ResponseStatus.ISSUCCESSFULL)))
+                    .map(baseResponse -> {
+                        ResponseSection responseSection = (ResponseSection) baseResponse;
+                        List<Section> sections = new ArrayList<>();
+                        for (BaseRequest baseRequest:responseSection.baseRequests
+                             ) {
+                            sections.add(new Section(baseRequest,
+                                    new ObservableArrayList<BaseHM>(),
+                                    ((RequestNowPlaying)baseRequest).getName()));
                         }
+                        return sections;
                     })
-                    .subscribe(new Action1<List<BaseHM>>() {
+                    .doOnNext(new Action1<List<Section>>() {
                         @Override
-                        public void call(List<BaseHM> baseHMs) {
-                            if (baseHMs.size() > 0) {
-                                updatePosts(baseHMs);
+                        public void call(List<Section> sections) {
+                            if (sections.size() > 0) {
+                                getState().sections.addAll(sections);
                             } else {
                                 Log.d(TAG, "loadFirst: return zero");
                             }
+                            Log.d(TAG, "call: "+sections.size());
+                            Log.d(TAG, "call: getState()"+getState().sections.size());
                         }
-                    }, Throwable::printStackTrace);
+                    });
         }
+        return Observable.create(subscriber -> {
 
-    }
-
-    @RxLogObservable
-    public void loadMore() {
-
-        service.getMovies(page)
-                .delay(1, TimeUnit.SECONDS)
-                .takeUntil(refresh)
-                .compose(withScheduler())
-                .map(new Func1<List<Movie>, List<BaseHM>>() {
-                    @Override
-                    public List<BaseHM> call(List<Movie> movieList) {
-                        Log.d(TAG, "getNowPlayingList: " + movieList.size());
-                        List<BaseHM> list = new ArrayList<>();
-                        for (Movie item : movieList) {
-                            if (item.getVoteAverage() > 5) {
-                                list.add(tranToMovieTrailerVM(item));
-                            } else {
-                                list.add(tranToMovieVM(item));
-                            }
-                        }
-                        return list;
-                    }
-                })
-                .doOnSubscribe(() -> {
-                    isLoadingMore.onNext(true);
-                })
-
-                .subscribe(new Action1<List<BaseHM>>() {
-                    @Override
-                    public void call(List<BaseHM> baseHMs) {
-                        Log.d(TAG, "loadMorePosts: ");
-                        isLoadingMore.onNext(false);
-                        posts.addAll(baseHMs);
-                    }
-                }, Throwable::printStackTrace)
-        ;
-
+        });
 
     }
 
     @Override
     public void bindViewModel() {
-        loadFirst();
+
     }
 
-    public static class MainState extends PostsState {
-        public MainState(ObservableArrayList<BaseHM> baseHMs) {
-            super(baseHMs);
+    public static class MainState extends BaseState {
+        List<Section> sections;
+        public MainState(List<Section> baseRequests) {
+            this.sections = baseRequests;
         }
     }
 
-    public static class Mapper {
-        public static BaseHM tranToMovieVM(Movie movie) {
+    public class Section implements Serializable{
+        BaseRequest baseRequest;
+        ObservableArrayList<BaseHM> baseHMs;
+        String title;
+        public Section(BaseRequest baseRequest, ObservableArrayList<BaseHM> baseHMs) {
+            this.baseRequest = baseRequest;
+            this.baseHMs = baseHMs;
+        }
+
+        public Section(BaseRequest baseRequest, ObservableArrayList<BaseHM> baseHMs, String title) {
+            this.baseRequest = baseRequest;
+            this.baseHMs = baseHMs;
+            this.title = title;
+        }
+
+        public BaseRequest getBaseRequest() {
+            return baseRequest;
+        }
+
+        public void setBaseRequest(BaseRequest baseRequest) {
+            this.baseRequest = baseRequest;
+        }
+
+        public ObservableArrayList<BaseHM> getBaseHMs() {
+            return baseHMs;
+        }
+
+        public void setBaseHMs(ObservableArrayList<BaseHM> baseHMs) {
+            this.baseHMs = baseHMs;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+    }
+
+    public  class Mapper {
+        public  BaseHM tranToMovieVM(Movie movie) {
             return new MovieHM(movie);
         }
 
-        public static BaseHM tranToMovieTrailerVM(Movie movie) {
+        public  BaseHM tranToMovieTrailerVM(Movie movie) {
             TrailerMovieHM trailerMovieHM = new TrailerMovieHM(movie);
             trailerMovieHM.setFullSpan(true);
             return trailerMovieHM;
         }
 
-        public static List<BaseHM> tranToVM(List<Movie> movieList) {
+        public  List<BaseHM> tranToVM(List<Movie> movieList) {
             List<BaseHM> list = new ArrayList<>();
             for (Movie item : movieList) {
                 if (item.getVoteAverage() > 6) {
