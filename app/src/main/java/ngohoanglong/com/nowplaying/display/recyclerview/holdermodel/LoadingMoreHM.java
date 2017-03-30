@@ -8,6 +8,8 @@ import ngohoanglong.com.nowplaying.display.recyclerview.holderfactory.ViewTypeFa
  */
 
 public class LoadingMoreHM extends BaseHM{
+    public LoadingMoreHM() {
+    }
 
     @Override
     public int getVMType(ViewTypeFactory vmTypeFactory) {

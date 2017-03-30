@@ -9,6 +9,8 @@ import ngohoanglong.com.nowplaying.display.recyclerview.holderfactory.ViewTypeFa
 
 public class NoMoreItemHM extends BaseHM{
 
+    public NoMoreItemHM() {
+    }
 
     @Override
     public int getVMType(ViewTypeFactory vmTypeFactory) {

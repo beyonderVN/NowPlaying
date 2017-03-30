@@ -27,7 +27,7 @@ import rx.schedulers.Schedulers;
 @Module
 public class AppModule {
     private Context context;
-    private AppState appState = new AppState();
+    private AppState appState = AppState.getAPPSTATE();
 
     public AppModule(Context context) {
         this.context = context;

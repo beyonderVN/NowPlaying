@@ -106,6 +106,9 @@ public class MainActivity extends BaseDelegateActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 View view = tab.getCustomView();
+                if (view == null) {
+                    return;
+                }
                 TextView tv = (TextView) view.findViewById(R.id.text1);
                 View v = view.findViewById(R.id.vMark);
                 v.setAlpha(0.2f);
@@ -115,6 +118,9 @@ public class MainActivity extends BaseDelegateActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 View view = tab.getCustomView();
+                if (view == null) {
+                    return;
+                }
                 TextView tv = (TextView) view.findViewById(R.id.text1);
                 tv.setTextColor(getResources().getColor(R.color.white));
                 View v = view.findViewById(R.id.vMark);
@@ -146,12 +152,15 @@ public class MainActivity extends BaseDelegateActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mainViewModel.startUI.asObservable()
-                .subscribe(aBoolean -> {
-                    if (aBoolean) {
+        if(mainViewModel.isNeedLoadFirst()){
+            mainViewModel.loadFirst()
+                    .takeUntil(rxDelegate.stopEvent())
+                    .subscribe(sections -> {
                         setupViewPage();
-                    }
-                });
+                    });
+        }else {
+            setupViewPage();
+        }
         mainViewModel.bindViewModel();
 
     }
@@ -168,5 +177,11 @@ public class MainActivity extends BaseDelegateActivity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        NowPlayingApplication.appComponent.getAppState().saveAppState();
+        super.onDestroy();
     }
 }

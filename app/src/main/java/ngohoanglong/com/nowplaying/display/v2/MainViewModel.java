@@ -25,7 +25,7 @@ import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovie
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
 import ngohoanglong.com.nowplaying.util.delegate.BaseState;
 import ngohoanglong.com.nowplaying.util.delegate.BaseStateViewModel;
-import rx.functions.Action1;
+import rx.Observable;
 import rx.subjects.PublishSubject;
 
 /**
@@ -38,6 +38,11 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
     MovieBoxService service;
     List<Section> mSections;
     PublishSubject<Boolean> startUI = PublishSubject.create();
+
+    Observable<Boolean> getStartUI(){
+        return startUI.asObservable()
+                .compose(withScheduler());
+    }
 
     @Inject
     public MainViewModel(ThreadScheduler threadScheduler,
@@ -55,13 +60,12 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
     }
 
     @RxLogObservable
-    public void loadFirst() {
-        if (isNeedLoadFirst()) {
-            service.sendRequest(new RequestSectionList())
+    public Observable<BaseResponse> loadFirst() {
+             return service.sendRequest(new RequestSectionList())
                     .takeUntil(refresh)
                     .compose(withScheduler())
-                    .doOnNext(baseResponse -> Log.d(TAG, "BaseResponse: " + (baseResponse.isSuccessfull() == BaseResponse.ResponseStatus.ISSUCCESSFULL)))
-                    .map(baseResponse -> {
+                    .doOnNext(baseResponse -> {
+                        Log.d(TAG, "BaseResponse: " + (baseResponse.isSuccessfull() == BaseResponse.ResponseStatus.ISSUCCESSFULL));
                         ResponseSection responseSection = (ResponseSection) baseResponse;
                         List<Section> sections = new ArrayList<>();
                         for (int i = 0; i < responseSection.baseRequests.size(); i++
@@ -74,31 +78,20 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
 
                             );
                         }
-                        return sections;
-                    })
-                    .doOnNext(new Action1<List<Section>>() {
-                        @Override
-                        public void call(List<Section> sections) {
-                            if (sections.size() > 0) {
-                                mSections.addAll(sections);
-                            } else {
-                                Log.d(TAG, "loadFirst: return zero");
-                            }
-                            Log.d(TAG, "call: " + sections.size());
-                            Log.d(TAG, "call: getState()" + mSections.size());
+                        if (sections.size() > 0) {
+                            mSections.addAll(sections);
+                        } else {
+                            Log.d(TAG, "loadFirst: return zero");
                         }
+                        Log.d(TAG, "call: " + sections.size());
+                        Log.d(TAG, "call: getState()" + mSections.size());
                     })
-                    .subscribe(sections -> {
-                        startUI.onNext(true);
-                    });
-        } else {
-            startUI.onNext(true);
-        }
+                    ;
+
     }
 
     @Override
     public void bindViewModel() {
-        loadFirst();
     }
 
     public static class MainState extends BaseState {

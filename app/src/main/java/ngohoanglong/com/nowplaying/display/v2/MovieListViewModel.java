@@ -26,7 +26,7 @@ import rx.subjects.PublishSubject;
  */
 
 public class MovieListViewModel extends PostViewModel {
-    private static final String TAG = "MainViewModel";
+    private static final String TAG = "MovieListViewModel";
     protected PublishSubject<Boolean> refresh = PublishSubject.create();
     MovieBoxService service;
 

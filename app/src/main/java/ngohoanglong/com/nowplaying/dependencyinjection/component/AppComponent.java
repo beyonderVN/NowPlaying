@@ -1,7 +1,5 @@
 package ngohoanglong.com.nowplaying.dependencyinjection.component;
 
-import java.util.List;
-
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -10,7 +8,6 @@ import ngohoanglong.com.nowplaying.dependencyinjection.module.AppModule;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.DataModule;
 import ngohoanglong.com.nowplaying.dependencyinjection.module.MovieModule;
 import ngohoanglong.com.nowplaying.display.v1.MainActivity;
-import ngohoanglong.com.nowplaying.display.v2.MainViewModel;
 
 
 /**
@@ -27,5 +24,4 @@ public interface AppComponent {
     void inject(ngohoanglong.com.nowplaying.display.v2.MainActivity mainActivity);
 
     AppState getAppState();
-    List<MainViewModel.Section> getSectionList();
 }
