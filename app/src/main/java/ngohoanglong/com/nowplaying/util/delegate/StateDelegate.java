@@ -3,11 +3,8 @@ package ngohoanglong.com.nowplaying.util.delegate;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.Serializable;
-
-import ngohoanglong.com.nowplaying.util.mvvm.PostViewModel;
 
 
 /**
@@ -41,14 +38,8 @@ public abstract class StateDelegate<M extends BaseStateViewModel, S extends Base
      */
     public void onSaveInstanceState(Bundle outState) {
         state = (S) viewModel.saveInstanceState();
-//        Serializable potentialPresentationModel =
-//                outState.getSerializable(presentationModelKey);
-//        Log.d(TAG, "onSaveInstanceState: "+potentialPresentationModel);
-        outState.putSerializable(presentationModelKey, state);
-        if(state instanceof PostViewModel.PostsState) {
-            Log.d(TAG, "onSaveInstanceState: "+presentationModelKey+": "+((PostViewModel.PostsState) state).getBaseHMs().size());
-        }
 
+        outState.putSerializable(presentationModelKey, state);
     }
 
 

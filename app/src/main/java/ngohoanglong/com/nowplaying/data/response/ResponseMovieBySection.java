@@ -3,7 +3,7 @@ package ngohoanglong.com.nowplaying.data.response;
 import java.util.List;
 
 import ngohoanglong.com.nowplaying.data.model.Movie;
-import ngohoanglong.com.nowplaying.data.request.RequestNowPlaying;
+import ngohoanglong.com.nowplaying.data.request.BaseRequest;
 
 /**
  * Created by Long on 3/24/2017.
@@ -14,10 +14,10 @@ public class ResponseMovieBySection extends BaseResponse {
         super(isSuccessfull);
     }
 
-    RequestNowPlaying requestNowPlaying ;
+    BaseRequest requestNowPlaying ;
     List<Movie> movies;
 
-    public ResponseMovieBySection(ResponseStatus isSuccessfull, List<Movie> movies,RequestNowPlaying requestNowPlaying) {
+    public ResponseMovieBySection(ResponseStatus isSuccessfull, List<Movie> movies,BaseRequest requestNowPlaying) {
         super(isSuccessfull);
         this.movies = movies;
         this.requestNowPlaying = requestNowPlaying;
@@ -31,11 +31,11 @@ public class ResponseMovieBySection extends BaseResponse {
         this.movies = movies;
     }
 
-    public RequestNowPlaying getRequestNowPlaying() {
+    public BaseRequest getRequestNowPlaying() {
         return requestNowPlaying;
     }
 
-    public void setRequestNowPlaying(RequestNowPlaying requestNowPlaying) {
+    public void setRequestNowPlaying(BaseRequest requestNowPlaying) {
         this.requestNowPlaying = requestNowPlaying;
     }
 }

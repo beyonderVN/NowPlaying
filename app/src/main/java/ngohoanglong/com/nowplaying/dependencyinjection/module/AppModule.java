@@ -5,13 +5,14 @@ import android.content.res.Resources;
 
 import com.google.gson.Gson;
 
+import java.util.List;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxApi;
-import ngohoanglong.com.nowplaying.data.MovieBoxService;
-import ngohoanglong.com.nowplaying.data.remote.MovieBoxServiceFactory;
+import ngohoanglong.com.nowplaying.AppState;
+import ngohoanglong.com.nowplaying.display.v2.MainViewModel;
 import ngohoanglong.com.nowplaying.manager.AuthManager;
 import ngohoanglong.com.nowplaying.manager.NetworkingManager;
 import ngohoanglong.com.nowplaying.util.FileUtils;
@@ -26,9 +27,22 @@ import rx.schedulers.Schedulers;
 @Module
 public class AppModule {
     private Context context;
+    private AppState appState = new AppState();
 
     public AppModule(Context context) {
         this.context = context;
+    }
+
+
+    @Provides
+    @Singleton
+    public AppState provideAppState() {
+        return appState;
+    }
+
+    @Provides
+    public List<MainViewModel.Section> provideSectionList() {
+        return appState.getSections();
     }
 
     @Provides
@@ -69,16 +83,6 @@ public class AppModule {
         return new AuthManager(context, gson);
     }
 
-    @Provides
-    @Singleton
-    MovieBoxApi provideMovieBoxServiceApi() {
-        return MovieBoxServiceFactory.makeService();
-    }
 
-    @Provides
-    @Singleton
-    MovieBoxService provideMovieBoxService(MovieBoxApi movieBoxApi) {
-        return new MovieBoxService(movieBoxApi);
-    }
 
 }

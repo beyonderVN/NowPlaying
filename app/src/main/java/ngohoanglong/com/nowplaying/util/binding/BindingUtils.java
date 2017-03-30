@@ -28,4 +28,9 @@ public class BindingUtils {
     public static void setStateViewAnimator(final ViewAnimator viewAnimator, final int state) {
         viewAnimator.setDisplayedChild(state);
     }
+
+    @BindingAdapter("setupPage")
+    public static void setupPage(final ViewAnimator viewAnimator, final int state) {
+        viewAnimator.setDisplayedChild(state);
+    }
 }

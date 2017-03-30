@@ -51,7 +51,7 @@ public class MovieListFragment extends BaseDelegateFragment {
         return fragment;
     }
 
-
+    int pos;
     @Inject
     MovieListViewModel movieListViewModel;
 
@@ -84,16 +84,14 @@ public class MovieListFragment extends BaseDelegateFragment {
             @NonNull
             @Override
             protected MovieListViewModel.MovieListState createStateModel() {
-                return null;
+                return new MovieListViewModel.MovieListState();
             }
         };
         lifecycleDelegates.add(rxDelegate);
         lifecycleDelegates.add(stateDelegate);
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            int pos = getArguments().getInt(SECTION_POS);
-            section = ((MainActivity) getActivity()).getSections().get(pos);
-            movieListViewModel.returnInstanceState(new MovieListViewModel.MovieListState(section));
+            pos = getArguments().getInt(SECTION_POS);
         }
     }
 
@@ -109,6 +107,8 @@ public class MovieListFragment extends BaseDelegateFragment {
     @Override
     public void onStart() {
         super.onStart();
+        movieListViewModel.section = ((MainActivity) getActivity()).getSections().get(pos);
+        movieListViewModel.bindViewModel();
         movieListViewModel.getIsLoadingMore()
         .takeUntil(rxDelegate.stopEvent())
         .subscribe(aBoolean -> {
@@ -116,6 +116,13 @@ public class MovieListFragment extends BaseDelegateFragment {
             isLoadingMore = aBoolean;
         });
         movieListViewModel.loadFirst();
+
+        MumAdapter mumAdapter = new MumAdapter(getContext(),
+                new HolderFactoryImpl(),
+                movieListViewModel.getPosts(),
+                ((MainActivity) getActivity()).dragPanelMovieDetailDelegate
+                );
+        listRV.setAdapter(mumAdapter);
     }
 
     void setupUI() {
@@ -163,10 +170,7 @@ public class MovieListFragment extends BaseDelegateFragment {
             }
         });
 
-        MumAdapter mumAdapter = new MumAdapter(getContext(),
-                new HolderFactoryImpl(),
-                movieListViewModel.getPosts());
-        listRV.setAdapter(mumAdapter);
+
     }
 
     @Override

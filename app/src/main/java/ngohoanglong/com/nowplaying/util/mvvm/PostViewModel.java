@@ -68,7 +68,7 @@ public abstract class PostViewModel extends BaseStateViewModel<PostViewModel.Pos
     }
 
     protected void hideLoadingMore() {
-        if(posts.size()==0)return;
+        if(posts==null || posts.size()==0)return;
         if (posts.get(posts.size() - 1) instanceof LoadingMoreHM) {
             removePost(posts.size() - 1);
         }
@@ -86,6 +86,9 @@ public abstract class PostViewModel extends BaseStateViewModel<PostViewModel.Pos
 
     public static class PostsState extends BaseState {
         ObservableArrayList<BaseHM> baseHMs;
+
+        public PostsState() {
+        }
 
         public PostsState(ObservableArrayList<BaseHM> baseHMs) {
             this.baseHMs = baseHMs;

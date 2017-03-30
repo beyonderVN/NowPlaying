@@ -6,10 +6,9 @@ import ngohoanglong.com.nowplaying.data.RequestFactory;
  * Created by Long on 3/24/2017.
  */
 
-public class RequestNowPlaying extends BaseRequestMovieList {
+public class RequestPopularList extends BaseRequestMovieList {
 
-
-    public RequestNowPlaying(int page, String name) {
+    public RequestPopularList(int page, String name) {
         super(page, name);
     }
 

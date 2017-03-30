@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import ngohoanglong.com.nowplaying.data.MovieBoxService;
 import ngohoanglong.com.nowplaying.data.model.Movie;
 import ngohoanglong.com.nowplaying.data.request.BaseRequest;
-import ngohoanglong.com.nowplaying.data.request.RequestNowPlaying;
+import ngohoanglong.com.nowplaying.data.request.BaseRequestMovieList;
 import ngohoanglong.com.nowplaying.data.request.RequestSectionList;
 import ngohoanglong.com.nowplaying.data.response.BaseResponse;
 import ngohoanglong.com.nowplaying.data.response.ResponseSection;
@@ -25,7 +25,6 @@ import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovie
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
 import ngohoanglong.com.nowplaying.util.delegate.BaseState;
 import ngohoanglong.com.nowplaying.util.delegate.BaseStateViewModel;
-import rx.Observable;
 import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
@@ -37,36 +36,43 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
     private static final String TAG = "MainViewModel";
     protected PublishSubject<Boolean> refresh = PublishSubject.create();
     MovieBoxService service;
-
+    List<Section> mSections;
+    PublishSubject<Boolean> startUI = PublishSubject.create();
 
     @Inject
     public MainViewModel(ThreadScheduler threadScheduler,
                          Resources resources,
-                         MovieBoxService service
+                         MovieBoxService service,
+                         List<Section> sections
     ) {
         super(threadScheduler, resources);
         this.service = service;
+        this.mSections = sections;
     }
 
     public boolean isNeedLoadFirst() {
-        return getState().sections == null || getState().sections.isEmpty();
+        return mSections == null || mSections.isEmpty();
     }
 
     @RxLogObservable
-    public Observable<List<Section>> loadFirst() {
+    public void loadFirst() {
         if (isNeedLoadFirst()) {
-            return service.sendRequest(new RequestSectionList())
+            service.sendRequest(new RequestSectionList())
                     .takeUntil(refresh)
                     .compose(withScheduler())
-                    .doOnNext(baseResponse -> Log.d(TAG, "BaseResponse: "+(baseResponse.isSuccessfull()==BaseResponse.ResponseStatus.ISSUCCESSFULL)))
+                    .doOnNext(baseResponse -> Log.d(TAG, "BaseResponse: " + (baseResponse.isSuccessfull() == BaseResponse.ResponseStatus.ISSUCCESSFULL)))
                     .map(baseResponse -> {
                         ResponseSection responseSection = (ResponseSection) baseResponse;
                         List<Section> sections = new ArrayList<>();
-                        for (BaseRequest baseRequest:responseSection.baseRequests
-                             ) {
-                            sections.add(new Section(baseRequest,
-                                    new ObservableArrayList<BaseHM>(),
-                                    ((RequestNowPlaying)baseRequest).getName()));
+                        for (int i = 0; i < responseSection.baseRequests.size(); i++
+                                ) {
+                            sections.add(new Section(responseSection.baseRequests.get(i),
+                                            new ObservableArrayList<BaseHM>(),
+                                            ((BaseRequestMovieList) responseSection.baseRequests.get(i)).getName(),
+                                            responseSection.urlBackgroundList.get(i)
+                                    )
+
+                            );
                         }
                         return sections;
                     })
@@ -74,37 +80,44 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
                         @Override
                         public void call(List<Section> sections) {
                             if (sections.size() > 0) {
-                                getState().sections.addAll(sections);
+                                mSections.addAll(sections);
                             } else {
                                 Log.d(TAG, "loadFirst: return zero");
                             }
-                            Log.d(TAG, "call: "+sections.size());
-                            Log.d(TAG, "call: getState()"+getState().sections.size());
+                            Log.d(TAG, "call: " + sections.size());
+                            Log.d(TAG, "call: getState()" + mSections.size());
                         }
+                    })
+                    .subscribe(sections -> {
+                        startUI.onNext(true);
                     });
+        } else {
+            startUI.onNext(true);
         }
-        return Observable.create(subscriber -> {
-
-        });
-
     }
 
     @Override
     public void bindViewModel() {
-
+        loadFirst();
     }
 
     public static class MainState extends BaseState {
-        List<Section> sections;
-        public MainState(List<Section> baseRequests) {
-            this.sections = baseRequests;
-        }
+
     }
 
-    public class Section implements Serializable{
+    public class Section implements Serializable {
         BaseRequest baseRequest;
         ObservableArrayList<BaseHM> baseHMs;
         String title;
+        String urlBackGround;
+
+        public Section(BaseRequest baseRequest, ObservableArrayList<BaseHM> baseHMs, String title, String urlBackGround) {
+            this.baseRequest = baseRequest;
+            this.baseHMs = baseHMs;
+            this.title = title;
+            this.urlBackGround = urlBackGround;
+        }
+
         public Section(BaseRequest baseRequest, ObservableArrayList<BaseHM> baseHMs) {
             this.baseRequest = baseRequest;
             this.baseHMs = baseHMs;
@@ -141,18 +154,18 @@ public class MainViewModel extends BaseStateViewModel<MainViewModel.MainState> {
         }
     }
 
-    public  class Mapper {
-        public  BaseHM tranToMovieVM(Movie movie) {
+    public class Mapper {
+        public BaseHM tranToMovieVM(Movie movie) {
             return new MovieHM(movie);
         }
 
-        public  BaseHM tranToMovieTrailerVM(Movie movie) {
+        public BaseHM tranToMovieTrailerVM(Movie movie) {
             TrailerMovieHM trailerMovieHM = new TrailerMovieHM(movie);
             trailerMovieHM.setFullSpan(true);
             return trailerMovieHM;
         }
 
-        public  List<BaseHM> tranToVM(List<Movie> movieList) {
+        public List<BaseHM> tranToVM(List<Movie> movieList) {
             List<BaseHM> list = new ArrayList<>();
             for (Movie item : movieList) {
                 if (item.getVoteAverage() > 6) {

@@ -30,6 +30,7 @@ public class MovieListViewModel extends PostViewModel {
     protected PublishSubject<Boolean> refresh = PublishSubject.create();
     MovieBoxService service;
 
+    MainViewModel.Section section;
     @Inject
     public MovieListViewModel(ThreadScheduler threadScheduler,
                               Resources resources,
@@ -46,13 +47,12 @@ public class MovieListViewModel extends PostViewModel {
 
     @RxLogObservable
     public void loadFirst() {
-
         if (isNeedLoadFirst()) {
-            service.sendRequest(getState().getSection().baseRequest)
+            service.sendRequest(section.baseRequest)
                     .takeUntil(refresh)
                     .compose(withScheduler())
                     .doOnSubscribe(() -> isLoadingMore.onNext(true))
-//                    .doOnTerminate(() -> isLoadingMore.onNext(false))
+                    .doOnTerminate(() -> isLoadingMore.onNext(false))
                     .subscribe(baseResponse -> {
                         isLoadingMore.onNext(false);
                         ResponseMovieBySection responseMovieBySection = (ResponseMovieBySection) baseResponse;
@@ -62,7 +62,7 @@ public class MovieListViewModel extends PostViewModel {
                             } else {
                                 Log.d(TAG, "loadFirst: return zero");
                             }
-                            getState().getSection().baseRequest = responseMovieBySection.getRequestNowPlaying();
+                            section.baseRequest = responseMovieBySection.getRequestNowPlaying();
                         }
 
                     }, Throwable::printStackTrace);
@@ -72,12 +72,11 @@ public class MovieListViewModel extends PostViewModel {
 
     @RxLogObservable
     public void loadMore() {
-
-        service.sendRequest(getState().getSection().baseRequest)
+        service.sendRequest(section.baseRequest)
                 .takeUntil(refresh)
                 .compose(withScheduler())
                 .doOnSubscribe(() -> isLoadingMore.onNext(true))
-//                .doOnTerminate(() -> isLoadingMore.onNext(false))
+                .doOnTerminate(() -> isLoadingMore.onNext(false))
                 .subscribe(baseResponse -> {
                     isLoadingMore.onNext(false);
                     ResponseMovieBySection responseMovieBySection = (ResponseMovieBySection) baseResponse;
@@ -87,7 +86,7 @@ public class MovieListViewModel extends PostViewModel {
                         } else {
                             Log.d(TAG, "loadFirst: return zero");
                         }
-                        getState().getSection().baseRequest = responseMovieBySection.getRequestNowPlaying();
+                        section.baseRequest = responseMovieBySection.getRequestNowPlaying();
                     }
 
                 }, Throwable::printStackTrace);
@@ -97,26 +96,14 @@ public class MovieListViewModel extends PostViewModel {
 
     @Override
     public void bindViewModel() {
-
+        hideLoadingMore();
+        posts = section.baseHMs;
     }
 
     public MovieListState getState(){
         return (MovieListState) super.getState();
     }
     public static class MovieListState extends PostsState {
-        MainViewModel.Section section;
-        public MovieListState(MainViewModel.Section section) {
-            super(section.getBaseHMs());
-            this.section = section;
-        }
-
-        public MainViewModel.Section getSection() {
-            return section;
-        }
-
-        public void setSection(MainViewModel.Section section) {
-            this.section = section;
-        }
     }
 
     public  class Mapper {
@@ -133,7 +120,7 @@ public class MovieListViewModel extends PostViewModel {
         public  List<BaseHM> tranToVM(List<Movie> movieList) {
             List<BaseHM> list = new ArrayList<>();
             for (Movie item : movieList) {
-                if (item.getVoteAverage() > 6) {
+                if (item.getVoteAverage() > 7) {
                     list.add(tranToMovieTrailerVM(item));
                 } else {
                     list.add(tranToMovieVM(item));

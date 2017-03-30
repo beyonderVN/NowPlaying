@@ -24,9 +24,11 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
+
 import com.github.pedrovgs.transformer.Transformer;
 import com.github.pedrovgs.transformer.TransformerFactory;
 import com.nineoldandroids.view.ViewHelper;
@@ -426,9 +428,12 @@ public class DraggableView extends RelativeLayout {
    * Override method to configure the dragged view and secondView layout properly.
    */
   @Override protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-    if (isInEditMode())
+    if (isInEditMode()) {
+      Log.d("onLayout", "(boolean changed, int left, int top, int right, int bottom: " + changed + "," + left + "," + top + "," + right + "," + bottom);
       super.onLayout(changed, left, top, right, bottom);
+    }
     else if (isDragViewAtTop()) {
+      Log.d("onLayout", "(boolean changed, int left, int top, int right, int bottom: " + changed + "," + left + "," + top + "," + right + "," + bottom);
       dragView.layout(left, top, right, transformer.getOriginalHeight());
       secondView.layout(left, transformer.getOriginalHeight(), right, bottom);
       ViewHelper.setY(dragView, top);

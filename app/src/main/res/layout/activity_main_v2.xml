@@ -35,7 +35,10 @@
                 android:id="@+id/sliding_tabs"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                app:tabMode="fixed" />
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
+                app:tabMode="scrollable"
+               />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -43,6 +46,18 @@
                 android:background="@drawable/action_bar">
             </LinearLayout>
         </LinearLayout>
+        <com.github.pedrovgs.DraggablePanel
+            xmlns:draggable_panel="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/draggable_panel"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            draggable_panel:x_scale_factor="2.3"
+            draggable_panel:y_scale_factor="2.3"
+            draggable_panel:top_fragment_height="200dip"
+            draggable_panel:top_fragment_margin_right="10dip"
+            draggable_panel:top_fragment_margin_bottom="10dip"
+            draggable_panel:enable_horizontal_alpha_effect="false"
+            android:visibility="gone"/>
     </FrameLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nvView"

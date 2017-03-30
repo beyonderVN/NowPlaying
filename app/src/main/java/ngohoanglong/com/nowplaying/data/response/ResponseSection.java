@@ -15,6 +15,14 @@ public class ResponseSection extends BaseResponse {
 
     public String name;
     public List<BaseRequest> baseRequests;
+    public List<String> urlBackgroundList;
+
+    public ResponseSection(ResponseStatus isSuccessfull, String name, List<BaseRequest> baseRequests, List<String> urlBackgroundList) {
+        super(isSuccessfull);
+        this.name = name;
+        this.baseRequests = baseRequests;
+        this.urlBackgroundList = urlBackgroundList;
+    }
 
     public ResponseSection(ResponseStatus isSuccessfull, String name, List<BaseRequest> baseRequests) {
         super(isSuccessfull);

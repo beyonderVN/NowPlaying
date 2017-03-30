@@ -54,7 +54,7 @@ public class MainViewModel extends PostViewModel {
     public void loadFirst() {
         Log.d(TAG, "loadFirst: page: " + page);
         if (isNeedLoadFirst()) {
-            service.getMovies(page)
+            service.getNowPlayingList(page)
 //                    .delay(0, TimeUnit.SECONDS)
                     .takeUntil(refresh)
                     .compose(withScheduler())
@@ -91,7 +91,7 @@ public class MainViewModel extends PostViewModel {
     @RxLogObservable
     public void loadMore() {
         Log.d(TAG, "loadMore:  page: " + page);
-        service.getMovies(page)
+        service.getNowPlayingList(page)
                 .delay(1, TimeUnit.SECONDS)
                 .takeUntil(refresh)
                 .compose(withScheduler())

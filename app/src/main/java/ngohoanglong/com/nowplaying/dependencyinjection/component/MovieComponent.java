@@ -13,7 +13,10 @@ import ngohoanglong.com.nowplaying.display.v2.MovieListFragment;
 @ActivityScope
 @Subcomponent(modules = {MovieModule.class})
 public interface MovieComponent {
+
     void inject(DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate);
 
     void inject(MovieListFragment movieListFragment);
+
+    void inject(ngohoanglong.com.nowplaying.display.v2.DragPanelMovieDetailDelegate dragPanelMovieDetailDelegate);
 }
