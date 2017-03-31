@@ -181,7 +181,6 @@ public class MainActivity extends BaseDelegateActivity {
 
     @Override
     protected void onDestroy() {
-        NowPlayingApplication.appComponent.getAppState().saveAppState();
         super.onDestroy();
     }
 }

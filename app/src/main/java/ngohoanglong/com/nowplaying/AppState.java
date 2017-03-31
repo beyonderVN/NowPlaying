@@ -18,27 +18,27 @@ import ngohoanglong.com.nowplaying.display.v2.MainViewModel;
  * Created by Long on 3/29/2017.
  */
 
-public class AppState implements Serializable{
+public class AppState implements Serializable {
     private static final String TAG = "AppState";
     List<MainViewModel.Section> sections = new ArrayList<>();
 
-    static AppState APPSTATE;
+    public AppState() {
+    }
 
-    public static AppState getAPPSTATE(){
-        if(APPSTATE==null) {
-            SharedPreferences sharedPreferences;
-            sharedPreferences = NowPlayingApplication.context.getSharedPreferences(
-                    "NowPlaying", Context.MODE_PRIVATE);
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString("AppState", "");
-            if (!Objects.equals(json, "") && !TextUtils.isEmpty(json)) {
-                Log.d(TAG, "getAPPSTATE: "+json);
-                APPSTATE = gson.fromJson(json, AppState.class);
-            }else {
-                APPSTATE = new AppState();
-            }
+    public static AppState getAPPSTATE() {
+        AppState appState;
+        SharedPreferences sharedPreferences;
+        sharedPreferences = NowPlayingApplication.context.getSharedPreferences(
+                "NowPlaying", Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("AppState", "");
+        if (!Objects.equals(json, "") && !TextUtils.isEmpty(json)) {
+            Log.d(TAG, "getAPPSTATE: " + json);
+            appState = gson.fromJson(json, AppState.class);
+        } else {
+            appState = new AppState();
         }
-        return APPSTATE;
+        return appState;
     }
 
     public List<MainViewModel.Section> getSections() {
@@ -49,7 +49,7 @@ public class AppState implements Serializable{
         this.sections = sections;
     }
 
-    public void saveAppState(){
+    public void saveAppState() {
         SharedPreferences sharedPreferences;
         sharedPreferences = NowPlayingApplication.context.getSharedPreferences(
                 "NowPlaying", Context.MODE_PRIVATE);
@@ -57,5 +57,13 @@ public class AppState implements Serializable{
         sharedPreferences.edit()
                 .putString("AppState", gson.toJson(this))
                 .apply();
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("AppState{");
+        sb.append("sections=").append(sections);
+        sb.append('}');
+        return sb.toString();
     }
 }

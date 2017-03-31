@@ -12,6 +12,9 @@ public class TrailerMovieHM extends BaseHM{
 
     private Movie movie;
 
+    public TrailerMovieHM() {
+    }
+
     public TrailerMovieHM(Movie movie) {
         this.movie = movie;
     }

@@ -27,10 +27,12 @@ import rx.schedulers.Schedulers;
 @Module
 public class AppModule {
     private Context context;
-    private AppState appState = AppState.getAPPSTATE();
+    private AppState appState;
 
     public AppModule(Context context) {
         this.context = context;
+//        appState = AppState.getAPPSTATE();
+        appState = new AppState();
     }
 
 
