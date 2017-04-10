@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.ViewAnimator;
 
 import com.vnwarriors.advancedui.appcore.common.recyclerviewhelper.InfiniteScrollListener;
 
@@ -67,6 +69,10 @@ public class MovieListFragment extends BaseDelegateFragment {
     RecyclerView listRV;
     @BindView(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.viewAnimator)
+    ViewAnimator viewAnimator;
+    @BindView(R.id.tvErrorMessage)
+    TextView tvErrorMessage;
 
 
     @Override
@@ -123,6 +129,16 @@ public class MovieListFragment extends BaseDelegateFragment {
                 ((MainActivity) getActivity()).dragPanelMovieDetailDelegate
                 );
         listRV.setAdapter(mumAdapter);
+
+        movieListViewModel.getErrorStringPublishSubject()
+                .takeUntil(rxDelegate.stopEvent())
+                .subscribe(errorString -> {
+                    viewAnimator.setDisplayedChild(2);
+                    tvErrorMessage.setText(tvErrorMessage.getText()+errorString);
+
+                });
+
+
     }
 
     void setupUI() {

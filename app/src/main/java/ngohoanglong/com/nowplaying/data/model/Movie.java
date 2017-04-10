@@ -56,6 +56,8 @@ public class Movie implements Serializable {
     @Expose
     private float voteAverage;
 
+
+
     /**
      *
      * @return

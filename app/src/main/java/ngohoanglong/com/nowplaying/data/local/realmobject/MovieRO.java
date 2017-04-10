@@ -3,16 +3,15 @@ package ngohoanglong.com.nowplaying.data.local.realmobject;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by Long on 10/5/2016.
  */
 
-public class Movie extends RealmObject {
+public class MovieRO extends RealmObject {
 
     @SerializedName("poster_path")
     @Expose
@@ -26,11 +25,10 @@ public class Movie extends RealmObject {
     @SerializedName("release_date")
     @Expose
     private String releaseDate;
-    @SerializedName("genre_ids")
-    @Expose
-    private List<Integer> genreIds = new ArrayList<Integer>();
+
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private int id;
     @SerializedName("original_title")
     @Expose
@@ -56,6 +54,17 @@ public class Movie extends RealmObject {
     @SerializedName("vote_average")
     @Expose
     private float voteAverage;
+
+
+    private RealmList<TagRO> tags = new RealmList<>();
+
+    public RealmList<TagRO> getTags() {
+        return tags;
+    }
+
+    public void setTags(RealmList<TagRO> tags) {
+        this.tags = tags;
+    }
 
     /**
      *
@@ -129,23 +138,7 @@ public class Movie extends RealmObject {
         this.releaseDate = releaseDate;
     }
 
-    /**
-     *
-     * @return
-     * The genreIds
-     */
-    public List<Integer> getGenreIds() {
-        return genreIds;
-    }
 
-    /**
-     *
-     * @param genreIds
-     * The genre_ids
-     */
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
-    }
 
     /**
      *
@@ -311,22 +304,22 @@ public class Movie extends RealmObject {
 
     @Override
     public String toString() {
-        return "Movie{" +
-                "posterPath='" + posterPath + '\'' +
-                ", adult=" + adult +
-                ", overview='" + overview + '\'' +
-                ", releaseDate='" + releaseDate + '\'' +
-                ", genreIds=" + genreIds +
-                ", id=" + id +
-                ", originalTitle='" + originalTitle + '\'' +
-                ", originalLanguage='" + originalLanguage + '\'' +
-                ", title='" + title + '\'' +
-                ", backdropPath='" + backdropPath + '\'' +
-                ", popularity=" + popularity +
-                ", voteCount=" + voteCount +
-                ", video=" + video +
-                ", voteAverage=" + voteAverage +
-                '}';
+        final StringBuilder sb = new StringBuilder("MovieRO{");
+        sb.append("posterPath='").append(posterPath).append('\'').append('\n');
+        sb.append(", adult=").append(adult).append('\n');
+        sb.append(", overview='").append(overview).append('\'').append('\n');
+        sb.append(", releaseDate='").append(releaseDate).append('\'').append('\n');
+        sb.append(", id=").append(id).append('\n');
+        sb.append(", originalTitle='").append(originalTitle).append('\'').append('\n');
+        sb.append(", originalLanguage='").append(originalLanguage).append('\'').append('\n');
+        sb.append(", title='").append(title).append('\'').append('\n');
+        sb.append(", backdropPath='").append(backdropPath).append('\'').append('\n');
+        sb.append(", popularity=").append(popularity).append('\n');
+        sb.append(", voteCount=").append(voteCount).append('\n');
+        sb.append(", video=").append(video).append('\n');
+        sb.append(", voteAverage=").append(voteAverage).append('\n');
+        sb.append(", tags=").append(tags).append('\n');
+        sb.append('}');
+        return sb.toString();
     }
-
 }

@@ -10,8 +10,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import ngohoanglong.com.nowplaying.data.MovieBoxService;
+import ngohoanglong.com.nowplaying.data.local.realmobject.MovieRO;
 import ngohoanglong.com.nowplaying.data.model.Movie;
+import ngohoanglong.com.nowplaying.data.request.BaseRequestMovieList;
 import ngohoanglong.com.nowplaying.data.response.BaseResponse;
 import ngohoanglong.com.nowplaying.data.response.ResponseMovieBySection;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.BaseHM;
@@ -19,6 +24,7 @@ import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.MovieHM;
 import ngohoanglong.com.nowplaying.display.recyclerview.holdermodel.TrailerMovieHM;
 import ngohoanglong.com.nowplaying.util.ThreadScheduler;
 import ngohoanglong.com.nowplaying.util.mvvm.PostViewModel;
+import rx.Observable;
 import rx.subjects.PublishSubject;
 
 /**
@@ -29,6 +35,12 @@ public class MovieListViewModel extends PostViewModel {
     private static final String TAG = "MovieListViewModel";
     protected PublishSubject<Boolean> refresh = PublishSubject.create();
     MovieBoxService service;
+    PublishSubject<String> errorStringPublishSubject = PublishSubject.create();
+
+    Observable<String> getErrorStringPublishSubject(){
+        return errorStringPublishSubject.asObservable()
+                .compose(withScheduler());
+    }
 
     MainViewModel.Section section;
     @Inject
@@ -65,7 +77,11 @@ public class MovieListViewModel extends PostViewModel {
                             section.baseRequest = responseMovieBySection.getRequestNowPlaying();
                         }
 
-                    }, Throwable::printStackTrace);
+
+                    }, throwable -> {
+                        throwable.printStackTrace();
+                        errorStringPublishSubject.onNext(throwable.getMessage());
+                    });
         }
 
     }
@@ -89,8 +105,11 @@ public class MovieListViewModel extends PostViewModel {
                         section.baseRequest = responseMovieBySection.getRequestNowPlaying();
                     }
 
-                }, Throwable::printStackTrace);
 
+                },throwable -> {
+                    throwable.printStackTrace();
+                    errorStringPublishSubject.onNext(throwable.getMessage());
+                });
 
     }
 
@@ -98,6 +117,20 @@ public class MovieListViewModel extends PostViewModel {
     public void bindViewModel() {
         hideLoadingMore();
         posts = section.baseHMs;
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<MovieRO> movieROs = realm.where(MovieRO.class)
+                .contains("tags.tagName",((BaseRequestMovieList)section.baseRequest).getName())
+                .findAll();
+        Log.d(TAG, "loadMore: +movieROs.size()"+((BaseRequestMovieList)section.baseRequest).getName()
+                + ": "+movieROs.size());
+        movieROs.addChangeListener(new RealmChangeListener<RealmResults<MovieRO>>() {
+            @Override
+            public void onChange(RealmResults<MovieRO> element) {
+                Log.d(TAG, "onChange: "+element);
+            }
+        });
+
     }
 
     public MovieListState getState(){
