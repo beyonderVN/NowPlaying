@@ -59,12 +59,13 @@ public class MovieBoxService implements RequestFactory {
 
     @RxLogObservable
     public Observable<List<Movie>> getNowPlayingList(int page) {
-        Log.d(TAG, "getNowPlayingList: page"+page);
+        Log.d(TAG, "getNowPlayingList: page" + page);
         return movieBoxApi.getNowPlayingList(page)
                 .map(jsonObject -> {
-                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                    List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    Log.d(TAG, "getNowPlayingList: " + jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>() {
+                    }.getType();
+                    List<Movie> movies = (new Gson()).fromJson(jsonObject.getAsJsonArray("results"), listType);
                     return movies;
                 })
                 .doOnNext(movies -> {
@@ -78,15 +79,15 @@ public class MovieBoxService implements RequestFactory {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                String result="";
+                String result = "";
                 try {
-                    JsonObject jsonObject =  movieBoxApi.getTrailer(page).execute().body();
+                    JsonObject jsonObject = movieBoxApi.getTrailer(page).execute().body();
 
                     JsonArray json = jsonObject.getAsJsonArray("youtube");
 
                     if (json.size() > 0) {
-                        result =  json.get(0).getAsJsonObject().get("source").getAsString();// parse the date instead of toString()
-                        Log.d(TAG, "result: "+result);
+                        result = json.get(0).getAsJsonObject().get("source").getAsString();// parse the date instead of toString()
+                        Log.d(TAG, "result: " + result);
                     }
 
                 } catch (IOException e) {
@@ -104,15 +105,16 @@ public class MovieBoxService implements RequestFactory {
     public static final String UP_COMING = "UpComing";
     public static final String POPULAR = "Popular";
     public static final String LASTED = "LASTED";
+
     @RxLogObservable
     public Observable<BaseResponse> getMovieSectionList(RequestSectionList requestSectionList) {
         return Observable.create(subscriber -> {
 
             List<BaseRequest> baseRequests = new ArrayList<BaseRequest>();
 
-            baseRequests.add(new RequestNowPlaying(1,NOW_PLAYING));
-            baseRequests.add(new RequestUpComingList(1,UP_COMING));
-            baseRequests.add(new RequestPopularList(1,POPULAR));
+            baseRequests.add(new RequestNowPlaying(1, NOW_PLAYING));
+            baseRequests.add(new RequestUpComingList(1, UP_COMING));
+            baseRequests.add(new RequestPopularList(1, POPULAR));
 
             List<String> urlBackgroundList = new ArrayList<String>();
             urlBackgroundList.add("https://pbs.twimg.com/profile_images/590418452831014912/mRwKtbE2_400x400.jpg");
@@ -124,15 +126,15 @@ public class MovieBoxService implements RequestFactory {
                     baseRequests,
                     urlBackgroundList
             );
-            Realm realm  = Realm.getDefaultInstance();
+            Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            for (BaseRequest baseRequest:baseRequests
-                 ) {
+            for (BaseRequest baseRequest : baseRequests
+                    ) {
                 TagRO tagRO = realm.where(TagRO.class)
-                        .equalTo("tagName", (((BaseRequestMovieList)baseRequest).getName()))
+                        .equalTo("tagName", (((BaseRequestMovieList) baseRequest).getName()))
                         .findFirst();
-                if(tagRO==null){
-                    tagRO = realm.createObject(TagRO.class,((BaseRequestMovieList)baseRequest).getName());
+                if (tagRO == null) {
+                    tagRO = realm.createObject(TagRO.class, ((BaseRequestMovieList) baseRequest).getName());
                 }
             }
             realm.commitTransaction();
@@ -143,6 +145,7 @@ public class MovieBoxService implements RequestFactory {
 
                 ;
     }
+
     @RxLogObservable
     public Observable<BaseResponse> getNowPlayingList(RequestMovieBySection requestSection) {
         return Observable.create(subscriber -> {
@@ -150,9 +153,10 @@ public class MovieBoxService implements RequestFactory {
             subscriber.onCompleted();
         });
     }
+
     @RxLogObservable
     public Observable<BaseResponse> getNowPlayingList(RequestNowPlaying requestNowPlaying) {
-        Log.d(TAG, "getNowPlayingList: "+requestNowPlaying.toString());
+        Log.d(TAG, "getNowPlayingList: " + requestNowPlaying.toString());
         return getNowPlayingList(requestNowPlaying.getPage())
                 .doOnNext(new SaveMovieROAction(NOW_PLAYING))
                 .map(movies -> new ResponseMovieBySection(
@@ -161,14 +165,16 @@ public class MovieBoxService implements RequestFactory {
                         requestNowPlaying.upPage()
                 ));
     }
+
     @RxLogObservable
     public Observable<BaseResponse> getLastestList(RequestLastedList request) {
-        Log.d(TAG, "getLastestList: page"+request);
+        Log.d(TAG, "getLastestList: page" + request);
         return movieBoxApi.getUpcomingList(request.getPage())
                 .map(jsonObject -> {
-                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    Log.d(TAG, "getNowPlayingList: " + jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>() {
+                    }.getType();
+                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"), listType);
                 })
                 .doOnNext(new SaveMovieROAction(LASTED))
                 .map(movies -> new ResponseMovieBySection(
@@ -177,14 +183,16 @@ public class MovieBoxService implements RequestFactory {
                         request.upPage()
                 ));
     }
+
     @RxLogObservable
     public Observable<BaseResponse> getPopularList(RequestPopularList request) {
-        Log.d(TAG, "getPopularList: page"+request);
+        Log.d(TAG, "getPopularList: page" + request);
         return movieBoxApi.getPopularList(request.getPage())
                 .map(jsonObject -> {
-                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    Log.d(TAG, "getNowPlayingList: " + jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>() {
+                    }.getType();
+                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"), listType);
                 })
                 .doOnNext(new SaveMovieROAction(POPULAR))
                 .map(movies -> new ResponseMovieBySection(
@@ -193,14 +201,16 @@ public class MovieBoxService implements RequestFactory {
                         request.upPage()
                 ));
     }
+
     @RxLogObservable
     public Observable<BaseResponse> getUpcomingList(RequestUpComingList request) {
-        Log.d(TAG, "getUpcomingList: page"+request);
+        Log.d(TAG, "getUpcomingList: page" + request);
         return movieBoxApi.getUpcomingList(request.getPage())
                 .map(jsonObject -> {
-                    Log.d(TAG, "getNowPlayingList: "+jsonObject.toString());
-                    Type listType = new TypeToken<ArrayList<Movie>>(){}.getType();
-                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"),listType);
+                    Log.d(TAG, "getNowPlayingList: " + jsonObject.toString());
+                    Type listType = new TypeToken<ArrayList<Movie>>() {
+                    }.getType();
+                    return (new Gson()).<List<Movie>>fromJson(jsonObject.getAsJsonArray("results"), listType);
                 })
                 .doOnNext(new SaveMovieROAction(UP_COMING))
                 .map(movies -> new ResponseMovieBySection(
@@ -214,12 +224,12 @@ public class MovieBoxService implements RequestFactory {
     @Override
     public Observable<BaseResponse> sendRequest(BaseRequest requestType) {
         Observable<BaseResponse> baseResponseObservable = null;
-        switch (requestType.getType(this)){
-            case REQUEST_SECTION :
+        switch (requestType.getType(this)) {
+            case REQUEST_SECTION:
                 baseResponseObservable = getMovieSectionList((RequestSectionList) requestType);
                 break;
-            case REQUEST_MOVIE_BY_SECTION :
-                baseResponseObservable =  getNowPlayingList((RequestMovieBySection) requestType);
+            case REQUEST_MOVIE_BY_SECTION:
+                baseResponseObservable = getNowPlayingList((RequestMovieBySection) requestType);
                 break;
             case REQUEST_NOW_PLAYING:
                 baseResponseObservable = getNowPlayingList((RequestNowPlaying) requestType);
@@ -236,7 +246,7 @@ public class MovieBoxService implements RequestFactory {
             default:
         }
         return baseResponseObservable
-                .delay(1,TimeUnit.SECONDS);
+                .delay(1, TimeUnit.SECONDS);
     }
 
     @Override
@@ -270,7 +280,7 @@ public class MovieBoxService implements RequestFactory {
     }
 
     static class SavePOJOToRealmObject {
-        static boolean save(Movie movie,String tag){
+        static boolean save(Movie movie, String tag) {
             boolean isSaveSucessfull = false;
 
             Realm realm = Realm.getDefaultInstance();
@@ -278,7 +288,7 @@ public class MovieBoxService implements RequestFactory {
             MovieRO movieRO = realm.where(MovieRO.class).equalTo("id", (movie.getId())).findFirst();
             if (movieRO == null) {
 
-                movieRO = realm.createObject(MovieRO.class,movie.getId());
+                movieRO = realm.createObject(MovieRO.class, movie.getId());
                 movieRO.setAdult(movie.isAdult());
                 movieRO.setBackdropPath(movie.getBackdropPath());
                 movieRO.setOriginalLanguage(movie.getOriginalLanguage());
@@ -295,8 +305,8 @@ public class MovieBoxService implements RequestFactory {
                 TagRO tagRO = realm.where(TagRO.class)
                         .equalTo("tagName", tag)
                         .findFirst();
-                if(tagRO==null){
-                    tagRO = realm.createObject(TagRO.class,tag);
+                if (tagRO == null) {
+                    tagRO = realm.createObject(TagRO.class, tag);
                 }
                 movieRO.getTags().add(tagRO);
 
@@ -308,18 +318,18 @@ public class MovieBoxService implements RequestFactory {
 
 
                 boolean isHavingThisTag = false;
-                for (TagRO tagRO1: movieRO.getTags()
-                     ) {
-                    if(tagRO1!=null&&tagRO1.getTagName()==tag){
+                for (TagRO tagRO1 : movieRO.getTags()
+                        ) {
+                    if (tagRO1 != null && tagRO1.getTagName() == tag) {
                         isHavingThisTag = true;
                     }
                 }
-                if(!isHavingThisTag){
+                if (!isHavingThisTag) {
                     TagRO tagRO = realm.where(TagRO.class)
                             .equalTo("tagName", tag)
                             .findFirst();
-                    if(tagRO==null){
-                        tagRO = realm.createObject(TagRO.class,tag);
+                    if (tagRO == null) {
+                        tagRO = realm.createObject(TagRO.class, tag);
                     }
                     movieRO.getTags().add(tagRO);
                 }
@@ -330,8 +340,68 @@ public class MovieBoxService implements RequestFactory {
             realm.commitTransaction();
             return isSaveSucessfull;
         }
+        static boolean save(List<Movie> movies, String tag) {
+            Realm realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            for (Movie movie:movies
+                 ) {
+                MovieRO movieRO = realm.where(MovieRO.class).equalTo("id", (movie.getId())).findFirst();
+                if (movieRO == null) {
+
+                    movieRO = realm.createObject(MovieRO.class, movie.getId());
+                    movieRO.setAdult(movie.isAdult());
+                    movieRO.setBackdropPath(movie.getBackdropPath());
+                    movieRO.setOriginalLanguage(movie.getOriginalLanguage());
+                    movieRO.setOriginalTitle(movie.getOriginalTitle());
+                    movieRO.setOverview(movie.getOverview());
+                    movieRO.setPopularity(movie.getPopularity());
+                    movieRO.setPosterPath(movie.getPosterPath());
+                    movieRO.setTitle(movie.getTitle());
+                    movieRO.setReleaseDate(movie.getReleaseDate());
+                    movieRO.setVideo(movie.isVideo());
+                    movieRO.setVoteAverage(movie.getVoteAverage());
+                    movieRO.setVoteCount(movie.getVoteCount());
+
+                    TagRO tagRO = realm.where(TagRO.class)
+                            .equalTo("tagName", tag)
+                            .findFirst();
+                    if (tagRO == null) {
+                        tagRO = realm.createObject(TagRO.class, tag);
+                    }
+                    movieRO.getTags().add(tagRO);
+                    Log.d(TAG, "save: create successfully");
+                } else {
+                    Log.d(TAG, "save: object exited");
+
+
+                    boolean isHavingThisTag = false;
+                    for (TagRO tagRO1 : movieRO.getTags()
+                            ) {
+                        if (tagRO1 != null && tagRO1.getTagName() == tag) {
+                            isHavingThisTag = true;
+                        }
+                    }
+                    if (!isHavingThisTag) {
+                        TagRO tagRO = realm.where(TagRO.class)
+                                .equalTo("tagName", tag)
+                                .findFirst();
+                        if (tagRO == null) {
+                            tagRO = realm.createObject(TagRO.class, tag);
+                        }
+                        movieRO.getTags().add(tagRO);
+                    }
+
+                }
+            }
+
+
+
+            realm.commitTransaction();
+            return true;
+        }
 
     }
+
     static class SaveMovieROAction implements Action1<List<Movie>> {
         String tag;
 
@@ -341,10 +411,7 @@ public class MovieBoxService implements RequestFactory {
 
         @Override
         public void call(List<Movie> o) {
-            for (Movie movie:o
-                    ) {
-                Log.d(TAG, "SavePOJOToRealmObject.save: "+SavePOJOToRealmObject.save(movie,tag));
-            }
+                Log.d(TAG, "SavePOJOToRealmObject.save: " + SavePOJOToRealmObject.save(o, tag));
         }
     }
 }

@@ -127,7 +127,14 @@ public class MovieListViewModel extends PostViewModel {
         movieROs.addChangeListener(new RealmChangeListener<RealmResults<MovieRO>>() {
             @Override
             public void onChange(RealmResults<MovieRO> element) {
-                Log.d(TAG, "onChange: "+element);
+                Log.d(TAG, "onChange: "+element.size());
+            }
+        });
+        realm.addChangeListener(new RealmChangeListener<Realm>() {
+            @Override
+            public void onChange(Realm element) {
+//              keep this gor movieROs.addChangeListener working o.O
+                Log.d(TAG, "movieROs.size(): "+((BaseRequestMovieList)section.baseRequest).getName()+": "+movieROs.size());
             }
         });
 
@@ -162,4 +169,7 @@ public class MovieListViewModel extends PostViewModel {
             return list;
         }
     }
+
+
+
 }
